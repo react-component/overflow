@@ -65,7 +65,6 @@ function Overflow<ItemType = any>(
   function registerSize(key: React.Key, width: number) {
     setItemWidths((origin) => {
       const clone = new Map(origin);
-      console.log('==>>>', key, width);
 
       if (!width) {
         clone.delete(key);
@@ -77,11 +76,8 @@ function Overflow<ItemType = any>(
   }
 
   function registerOverflowSize(_: React.Key, width: number) {
-    console.log('Overflow >>>', width);
     setOverflowWidth(width);
   }
-
-  console.log('BATCH >>>', containerWidth, overflowWidth, itemWidths);
 
   // ================================ Render ================================
   let overflowNode = (

@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { beforeFrame, cancelBeforeFrame } from '../util';
 
 /**
  * State generate. Return a `setState` but it will flush all state with one render to save perf.
@@ -7,6 +8,7 @@ export function useBatchState() {
   const [, forceUpdate] = useState({});
   const statesRef = useRef<any[]>([]);
   let walkingIndex = 0;
+  let beforeFrameId: number = 0;
 
   function createState<T>(
     defaultValue: T,
@@ -25,7 +27,12 @@ export function useBatchState() {
     function setValue(val: any) {
       statesRef.current[myIndex] = typeof val === 'function' ? val(value) : val;
 
-      forceUpdate({});
+      cancelBeforeFrame(beforeFrameId);
+
+      // Flush with batch
+      beforeFrameId = beforeFrame(() => {
+        forceUpdate({});
+      });
     }
 
     return [value, setValue];

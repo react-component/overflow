@@ -12,24 +12,29 @@ export function getFullWidth(element: HTMLElement) {
 }
 
 // =================================== Frame ===================================
-let batchQueue: (() => void)[] = [];
-let batchUUID = 0;
+let uuid = 0;
 
-/** Will execute all callback before next frame but after promise */
-export function batchTask(callback: () => void) {
-  batchUUID += 1;
-  const id = batchUUID;
+const ids = new Set();
 
-  batchQueue.push(callback);
+/** Trigger before frame but after promise */
+export function beforeFrame(callback: () => void) {
+  uuid += 1;
+  const myId = uuid;
+
+  ids.add(myId);
 
   const channel = new MessageChannel();
   channel.port1.onmessage = () => {
-    if (id === batchUUID) {
-      batchQueue.forEach((fn) => {
-        fn();
-      });
-      batchQueue = [];
+    if (ids.has(myId)) {
+      ids.delete(myId);
+      callback();
     }
   };
   channel.port2.postMessage(null);
+
+  return myId;
+}
+
+export function cancelBeforeFrame(id: number) {
+  ids.delete(id);
 }

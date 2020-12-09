@@ -39,6 +39,8 @@ function Overflow<ItemType = any>(
   );
   const [overflowWidth, setOverflowWidth] = createUseState(0);
 
+  const [displayCount, setDisplayCount] = React.useState(0);
+
   const itemPrefixCls = `${prefixCls}-item`;
 
   // ================================= Item =================================
@@ -79,6 +81,27 @@ function Overflow<ItemType = any>(
     setOverflowWidth(width);
   }
 
+  // ================================ Effect ================================
+  React.useLayoutEffect(() => {
+    console.log('Effect >>>', containerWidth, itemWidths, overflowWidth);
+    if (containerWidth && overflowWidth && data) {
+      let totalWidth = 0;
+
+      const len = data.length;
+
+      for (let i = 0; i < len; i += 1) {
+        const itemWidth = itemWidths.get(getKey(data[i], i)) || 0;
+        totalWidth += itemWidth;
+
+        if (totalWidth + overflowWidth > containerWidth) {
+          setDisplayCount(i - 1);
+        } else if (i === len - 1) {
+          setDisplayCount(len - 1);
+        }
+      }
+    }
+  }, [containerWidth, itemWidths, overflowWidth, getKey, data]);
+
   // ================================ Render ================================
   let overflowNode = (
     <div className={classNames(prefixCls, className)} style={style} ref={ref}>
@@ -94,6 +117,7 @@ function Overflow<ItemType = any>(
             itemKey={key}
             registerSize={registerSize}
             disabled={disabled}
+            display={index <= displayCount}
           />
         );
       })}

@@ -8,8 +8,6 @@ interface ItemType {
   label: string;
 }
 
-const originConsole = console.log;
-
 function createData(count: number): ItemType[] {
   const data: ItemType[] = new Array(count).fill(undefined).map((_, index) => ({
     value: index,

@@ -12,6 +12,7 @@ export interface ItemProps<ItemType> {
   itemKey?: React.Key;
   registerSize: (key: React.Key, width: number) => void;
   children?: React.ReactNode;
+  display?: boolean;
 }
 
 export default function Item<ItemType>(props: ItemProps<ItemType>) {
@@ -24,6 +25,7 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
     itemKey,
     className,
     children,
+    display = true,
   } = props;
 
   // ================================ Effect ================================
@@ -42,7 +44,12 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
   const childNode = item !== undefined ? renderItem!(item) : children;
 
   let itemNode = (
-    <div className={classNames(prefixCls, className)}>{childNode}</div>
+    <div
+      className={classNames(prefixCls, className)}
+      style={{ opacity: display ? 1 : 0.2 }}
+    >
+      {childNode}
+    </div>
   );
 
   if (!disabled) {

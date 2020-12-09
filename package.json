@@ -1,12 +1,12 @@
 {
-  "name": "rc-footer",
+  "name": "rc-overflow",
   "version": "0.6.3",
-  "description": "Pretty Footer react component used in used in ant.design",
+  "description": "Auto collapse box when overflow",
   "keywords": [
     "react",
     "react-component",
-    "react-footer",
-    "footer",
+    "react-overflow",
+    "overflow",
     "antd",
     "ant-design"
   ],
@@ -19,13 +19,13 @@
     "lib",
     "dist"
   ],
-  "homepage": "https://react-component.github.io/footer",
+  "homepage": "https://react-component.github.io/overflow",
   "repository": {
     "type": "git",
-    "url": "git@github.com:react-component/footer.git"
+    "url": "git@github.com:react-component/overflow.git"
   },
   "bugs": {
-    "url": "http://github.com/react-component/footer/issues"
+    "url": "http://github.com/react-component/overflow/issues"
   },
   "license": "MIT",
   "scripts": {

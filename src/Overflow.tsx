@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
 import { getFullWidth } from './util';
 import Item from './Item';
+import { useBatchState } from './hooks/useBatchState';
 
 export interface OverflowProps<ItemType> {
   prefixCls?: string;
@@ -30,11 +31,13 @@ function Overflow<ItemType = any>(
     maxCount = 'responsive',
   } = props;
 
-  const [containerWidth, setContainerWidth] = React.useState(0);
-  const [itemWidths, setItemWidths] = React.useState(
+  const createUseState = useBatchState();
+
+  const [containerWidth, setContainerWidth] = createUseState(0);
+  const [itemWidths, setItemWidths] = createUseState(
     new Map<React.Key, number>(),
   );
-  const [overflowWidth, setOverflowWidth] = React.useState(0);
+  const [overflowWidth, setOverflowWidth] = createUseState(0);
 
   const itemPrefixCls = `${prefixCls}-item`;
 
@@ -60,22 +63,25 @@ function Overflow<ItemType = any>(
   }
 
   function registerSize(key: React.Key, width: number) {
-    const clone = new Map(itemWidths);
-    console.log('==>>>', key, width);
+    setItemWidths((origin) => {
+      const clone = new Map(origin);
+      console.log('==>>>', key, width);
 
-    if (!width) {
-      clone.delete(key);
-    } else {
-      clone.set(key, width);
-    }
-
-    setItemWidths(clone);
+      if (!width) {
+        clone.delete(key);
+      } else {
+        clone.set(key, width);
+      }
+      return clone;
+    });
   }
 
   function registerOverflowSize(_: React.Key, width: number) {
     console.log('Overflow >>>', width);
     setOverflowWidth(width);
   }
+
+  console.log('BATCH >>>', containerWidth, overflowWidth, itemWidths);
 
   // ================================ Render ================================
   let overflowNode = (

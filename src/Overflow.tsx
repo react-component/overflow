@@ -1,5 +1,8 @@
 import * as React from 'react';
 import classNames from 'classnames';
+import ResizeObserver from 'rc-resize-observer';
+import { getFullWidth } from './util';
+import Item from './Item';
 
 export interface OverflowProps<ItemType> {
   prefixCls?: string;
@@ -8,6 +11,8 @@ export interface OverflowProps<ItemType> {
   data?: ItemType[];
   itemKey?: React.Key | ((item: ItemType) => React.Key);
   renderItem?: (item: ItemType) => React.ReactNode;
+  disabled?: boolean;
+  maxCount?: number | 'responsive';
 }
 
 function Overflow<ItemType = any>(
@@ -21,7 +26,17 @@ function Overflow<ItemType = any>(
     itemKey,
     style,
     className,
+    disabled,
+    maxCount = 'responsive',
   } = props;
+
+  const [containerWidth, setContainerWidth] = React.useState(0);
+  const [itemWidths, setItemWidths] = React.useState(
+    new Map<React.Key, number>(),
+  );
+  const [overflowWidth, setOverflowWidth] = React.useState(0);
+
+  const itemPrefixCls = `${prefixCls}-item`;
 
   // ================================= Item =================================
   const getKey = React.useCallback(
@@ -39,20 +54,68 @@ function Overflow<ItemType = any>(
     [renderItem],
   );
 
+  // ================================= Size =================================
+  function onOverflowResize(_: object, element: HTMLElement) {
+    setContainerWidth(element.clientWidth);
+  }
+
+  function registerSize(key: React.Key, width: number) {
+    const clone = new Map(itemWidths);
+    console.log('==>>>', key, width);
+
+    if (!width) {
+      clone.delete(key);
+    } else {
+      clone.set(key, width);
+    }
+
+    setItemWidths(clone);
+  }
+
+  function registerOverflowSize(_: React.Key, width: number) {
+    console.log('Overflow >>>', width);
+    setOverflowWidth(width);
+  }
+
   // ================================ Render ================================
-  return (
+  let overflowNode = (
     <div className={classNames(prefixCls, className)} style={style} ref={ref}>
       {data.map((item, index) => {
         const key = getKey(item, index);
 
         return (
-          <div className={`${prefixCls}-item`} key={key}>
-            {mergedRenderItem(item)}
-          </div>
+          <Item<ItemType>
+            key={key}
+            item={item}
+            prefixCls={itemPrefixCls}
+            renderItem={mergedRenderItem}
+            itemKey={key}
+            registerSize={registerSize}
+            disabled={disabled}
+          />
         );
       })}
+
+      <Item
+        prefixCls={itemPrefixCls}
+        className={`${itemPrefixCls}-overflow`}
+        disabled={disabled}
+        registerSize={registerOverflowSize}
+      >
+        Overflow
+      </Item>
     </div>
   );
+
+  if (!disabled) {
+    overflowNode = (
+      <ResizeObserver onResize={onOverflowResize}>
+        {overflowNode}
+      </ResizeObserver>
+    );
+  }
+
+  return overflowNode;
 }
 
 const ForwardOverflow = React.forwardRef(Overflow);

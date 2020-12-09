@@ -42,7 +42,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.11.1",
-    "classnames": "^2.2.1"
+    "classnames": "^2.2.1",
+    "rc-resize-observer": "^0.3.0"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.9",

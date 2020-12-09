@@ -3,6 +3,7 @@ import { beforeFrame, cancelBeforeFrame } from '../util';
 
 /**
  * State generate. Return a `setState` but it will flush all state with one render to save perf.
+ * This is not a realization of `unstable_batchedUpdates`.
  */
 export function useBatchState() {
   const [, forceUpdate] = useState({});

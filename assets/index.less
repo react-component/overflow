@@ -1,4 +1,12 @@
 @overflow-prefix-cls: rc-overflow;
 
 .@{overflow-prefix-cls} {
+  display: inline-flex;
+  flex-wrap: nowrap;
+
+  &-item {
+    margin-right: 4px;
+    background: rgba(0, 255, 0, 0.2);
+    padding: 4px 8px;
+  }
 }

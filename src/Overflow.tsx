@@ -1,7 +1,6 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
-import { getFullWidth } from './util';
 import Item from './Item';
 import { useBatchState } from './hooks/useBatchState';
 
@@ -62,6 +61,7 @@ function Overflow<ItemType = any>(
   // ================================= Size =================================
   function onOverflowResize(_: object, element: HTMLElement) {
     setContainerWidth(element.clientWidth);
+    console.log('~~~???>>>', element.clientWidth, element);
   }
 
   function registerSize(key: React.Key, width: number) {
@@ -92,11 +92,23 @@ function Overflow<ItemType = any>(
       for (let i = 0; i < len; i += 1) {
         const itemWidth = itemWidths.get(getKey(data[i], i)) || 0;
         totalWidth += itemWidth;
+        console.log(
+          i,
+          '>>>',
+          totalWidth,
+          itemWidth,
+          overflowWidth,
+          '|',
+          totalWidth + overflowWidth,
+          containerWidth,
+        );
 
         if (totalWidth + overflowWidth > containerWidth) {
           setDisplayCount(i - 1);
+          break;
         } else if (i === len - 1) {
           setDisplayCount(len - 1);
+          break;
         }
       }
     }

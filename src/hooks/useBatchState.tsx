@@ -26,7 +26,8 @@ export function useBatchState() {
     const value = statesRef.current[myIndex];
 
     function setValue(val: any) {
-      statesRef.current[myIndex] = typeof val === 'function' ? val(value) : val;
+      statesRef.current[myIndex] =
+        typeof val === 'function' ? val(statesRef.current[myIndex]) : val;
 
       cancelBeforeFrame(beforeFrameId);
 

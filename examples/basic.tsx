@@ -32,10 +32,19 @@ function renderItem(item: ItemType) {
 }
 
 const Demo = () => {
-  const [data, setData] = React.useState(createData(1));
+  const [responsive, setResponsive] = React.useState(false);
+  const [data, setData] = React.useState(createData(5));
 
   return (
     <div style={{ padding: 32 }}>
+      <button
+        type="button"
+        onClick={() => {
+          setResponsive(!responsive);
+        }}
+      >
+        Responsive: {String(responsive)}
+      </button>
       <select
         style={{ width: 200, height: 32 }}
         value={data.length}
@@ -59,7 +68,11 @@ const Demo = () => {
           marginTop: 32,
         }}
       >
-        <Overflow<ItemType> data={data} renderItem={renderItem} />
+        <Overflow<ItemType>
+          data={data}
+          renderItem={renderItem}
+          maxCount={responsive ? 'responsive' : 6}
+        />
       </div>
     </div>
   );

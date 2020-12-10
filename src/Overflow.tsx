@@ -4,16 +4,18 @@ import ResizeObserver from 'rc-resize-observer';
 import Item from './Item';
 import { useBatchFrameState } from './hooks/useBatchFrameState';
 
+const RESPONSIVE = 'responsive' as const;
+
 export interface OverflowProps<ItemType> {
   prefixCls?: string;
   className?: string;
   style?: React.CSSProperties;
   data?: ItemType[];
   itemKey?: React.Key | ((item: ItemType) => React.Key);
+  /** Used for `responsive`. It will limit render node to avoid perf issue */
   itemWidth?: number;
   renderItem?: (item: ItemType) => React.ReactNode;
-  disabled?: boolean;
-  maxCount?: number | 'responsive';
+  maxCount?: number | typeof RESPONSIVE;
 }
 
 function Overflow<ItemType = any>(
@@ -25,14 +27,14 @@ function Overflow<ItemType = any>(
     data = [],
     renderItem,
     itemKey,
-    itemWidth,
+    itemWidth = 10,
     style,
     className,
-    disabled,
-    maxCount = 'responsive',
+    maxCount = RESPONSIVE,
   } = props;
 
   const createUseState = useBatchFrameState();
+  const disabled = maxCount !== RESPONSIVE;
 
   const [containerWidth, setContainerWidth] = createUseState(0);
   const [itemWidths, setItemWidths] = createUseState(
@@ -90,24 +92,30 @@ function Overflow<ItemType = any>(
     setOverflowWidth(width);
   }
 
+  // ================================= Data =================================
+  const mergedData = React.useMemo(
+    () => data.slice(0, Math.min(data.length, containerWidth / itemWidth)),
+    [data, itemWidth, containerWidth],
+  );
+
   // ================================ Effect ================================
   React.useLayoutEffect(() => {
-    if (containerWidth && overflowWidth && data) {
+    if (containerWidth && overflowWidth && mergedData) {
       let totalWidth = 0;
 
-      const len = data.length;
+      const len = mergedData.length;
 
       for (let i = 0; i < len; i += 1) {
-        const itemWidth = itemWidths.get(getKey(data[i], i));
+        const currentItemWidth = itemWidths.get(getKey(mergedData[i], i));
 
         // Break since data not ready
-        if (itemWidth === undefined) {
+        if (currentItemWidth === undefined) {
           updateDisplayCount(i - 1, true);
           break;
         }
 
         // Find best match
-        totalWidth += itemWidth;
+        totalWidth += currentItemWidth;
 
         if (totalWidth + overflowWidth > containerWidth) {
           updateDisplayCount(i - 1);
@@ -118,12 +126,12 @@ function Overflow<ItemType = any>(
         }
       }
     }
-  }, [containerWidth, itemWidths, overflowWidth, getKey, data]);
+  }, [containerWidth, itemWidths, overflowWidth, getKey, mergedData]);
 
   // ================================ Render ================================
   let overflowNode = (
     <div className={classNames(prefixCls, className)} style={style} ref={ref}>
-      {data.map((item, index) => {
+      {mergedData.map((item, index) => {
         const key = getKey(item, index);
 
         return (

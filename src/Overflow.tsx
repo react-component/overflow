@@ -2,7 +2,7 @@ import * as React from 'react';
 import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
 import Item from './Item';
-import { useBatchState } from './hooks/useBatchState';
+import { useBatchFrameState } from './hooks/useBatchFrameState';
 
 export interface OverflowProps<ItemType> {
   prefixCls?: string;
@@ -30,7 +30,7 @@ function Overflow<ItemType = any>(
     maxCount = 'responsive',
   } = props;
 
-  const createUseState = useBatchState();
+  const createUseState = useBatchFrameState();
 
   const [containerWidth, setContainerWidth] = createUseState(0);
   const [itemWidths, setItemWidths] = createUseState(
@@ -39,6 +39,7 @@ function Overflow<ItemType = any>(
   const [overflowWidth, setOverflowWidth] = createUseState(0);
 
   const [displayCount, setDisplayCount] = React.useState(0);
+  const [restReady, setRestReady] = React.useState(false);
 
   const itemPrefixCls = `${prefixCls}-item`;
 
@@ -57,6 +58,13 @@ function Overflow<ItemType = any>(
     renderItem || ((item: ItemType) => item),
     [renderItem],
   );
+
+  function updateDisplayCount(count: number, notReady?: boolean) {
+    setDisplayCount(count);
+    if (!notReady) {
+      setRestReady(count < data.length - 1);
+    }
+  }
 
   // ================================= Size =================================
   function onOverflowResize(_: object, element: HTMLElement) {
@@ -92,7 +100,7 @@ function Overflow<ItemType = any>(
 
         // Break since data not ready
         if (itemWidth === undefined) {
-          setDisplayCount(i - 1);
+          updateDisplayCount(i - 1, true);
           break;
         }
 
@@ -100,10 +108,10 @@ function Overflow<ItemType = any>(
         totalWidth += itemWidth;
 
         if (totalWidth + overflowWidth > containerWidth) {
-          setDisplayCount(i - 1);
+          updateDisplayCount(i - 1);
           break;
         } else if (i === len - 1) {
-          setDisplayCount(len - 1);
+          updateDisplayCount(len - 1);
           break;
         }
       }
@@ -138,6 +146,7 @@ function Overflow<ItemType = any>(
         className={`${itemPrefixCls}-rest`}
         disabled={disabled}
         registerSize={registerOverflowSize}
+        display={restReady}
       >
         Overflow
       </Item>

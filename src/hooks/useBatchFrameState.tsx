@@ -1,11 +1,11 @@
 import { useRef, useState } from 'react';
-import { beforeFrame, cancelBeforeFrame } from '../util';
+import raf from 'rc-util/lib/raf';
 
 /**
  * State generate. Return a `setState` but it will flush all state with one render to save perf.
  * This is not a realization of `unstable_batchedUpdates`.
  */
-export function useBatchState() {
+export function useBatchFrameState() {
   const [, forceUpdate] = useState({});
   const statesRef = useRef<any[]>([]);
   let walkingIndex = 0;
@@ -29,10 +29,10 @@ export function useBatchState() {
       statesRef.current[myIndex] =
         typeof val === 'function' ? val(statesRef.current[myIndex]) : val;
 
-      cancelBeforeFrame(beforeFrameId);
+      raf.cancel(beforeFrameId);
 
       // Flush with batch
-      beforeFrameId = beforeFrame(() => {
+      beforeFrameId = raf(() => {
         forceUpdate({});
       });
     }

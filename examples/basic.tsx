@@ -31,6 +31,20 @@ function renderItem(item: ItemType) {
   );
 }
 
+function renderRest(items: ItemType[]) {
+  return (
+    <div
+      style={{
+        margin: '0 16px 0 8px',
+        padding: '4px 8px',
+        background: 'rgba(255, 0, 0, 0.2)',
+      }}
+    >
+      +{items.length}...
+    </div>
+  );
+}
+
 const Demo = () => {
   const [responsive, setResponsive] = React.useState(false);
   const [data, setData] = React.useState(createData(5));
@@ -72,6 +86,7 @@ const Demo = () => {
         <Overflow<ItemType>
           data={data}
           renderItem={renderItem}
+          renderRest={renderRest}
           maxCount={responsive ? 'responsive' : 6}
         />
       </div>

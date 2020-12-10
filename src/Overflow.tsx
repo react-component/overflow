@@ -58,21 +58,27 @@ function Overflow<ItemType = any>(
   // ================================= Data =================================
   const isResponsive = maxCount === RESPONSIVE;
 
-  const [visibleItems, omittedItems] = React.useMemo(() => {
-    const len = data.length;
+  // When is `responsive`, we will always render rest node to get the real width of it for calculation
+  const showRest = isResponsive || data.length > maxCount!;
+
+  const mergedData = React.useMemo(() => {
     let items = data;
 
     if (isResponsive) {
-      items = data.slice(0, Math.min(len, containerWidth / itemWidth));
+      items = data.slice(0, Math.min(data.length, containerWidth / itemWidth));
     } else if (typeof maxCount === 'number') {
       items = data.slice(0, maxCount);
     }
 
-    return [items, data.slice(items.length, len)];
-  }, [data, itemWidth, containerWidth, maxCount]);
+    return items;
+  }, [data, itemWidth, containerWidth, maxCount, isResponsive]);
 
-  // When is `responsive`, we will always render rest node to get the real width of it for calculation
-  const showRest = isResponsive || data.length > maxCount!;
+  const omittedItems = React.useMemo(() => {
+    if (isResponsive) {
+      return data.slice(displayCount + 1);
+    }
+    return data.slice(mergedData.length);
+  }, [data, mergedData, isResponsive, displayCount]);
 
   // ================================= Item =================================
   const getKey = React.useCallback(
@@ -121,13 +127,13 @@ function Overflow<ItemType = any>(
 
   // ================================ Effect ================================
   React.useLayoutEffect(() => {
-    if (containerWidth && restWidth && visibleItems) {
+    if (containerWidth && restWidth && mergedData) {
       let totalWidth = 0;
 
-      const len = visibleItems.length;
+      const len = mergedData.length;
 
       for (let i = 0; i < len; i += 1) {
-        const currentItemWidth = itemWidths.get(getKey(visibleItems[i], i));
+        const currentItemWidth = itemWidths.get(getKey(mergedData[i], i));
 
         // Break since data not ready
         if (currentItemWidth === undefined) {
@@ -147,12 +153,12 @@ function Overflow<ItemType = any>(
         }
       }
     }
-  }, [containerWidth, itemWidths, restWidth, getKey, visibleItems]);
+  }, [containerWidth, itemWidths, restWidth, getKey, mergedData]);
 
   // ================================ Render ================================
   let overflowNode = (
     <div className={classNames(prefixCls, className)} style={style} ref={ref}>
-      {visibleItems.map((item, index) => {
+      {mergedData.map((item, index) => {
         const key = getKey(item, index);
 
         return (

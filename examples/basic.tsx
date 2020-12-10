@@ -32,7 +32,7 @@ function renderItem(item: ItemType) {
 }
 
 const Demo = () => {
-  const [responsive, setResponsive] = React.useState(true);
+  const [responsive, setResponsive] = React.useState(false);
   const [data, setData] = React.useState(createData(5));
 
   return (
@@ -43,7 +43,7 @@ const Demo = () => {
           setResponsive(!responsive);
         }}
       >
-        Responsive: {String(responsive)}
+        {responsive ? 'Responsive' : 'MaxCount: 6'}
       </button>
       <select
         style={{ width: 200, height: 32 }}

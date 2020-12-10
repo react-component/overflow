@@ -11,7 +11,7 @@ export interface ItemProps<ItemType> {
   itemKey?: React.Key;
   registerSize: (key: React.Key, width: number) => void;
   children?: React.ReactNode;
-  display?: boolean;
+  display: boolean;
   order: number;
 }
 
@@ -25,9 +25,11 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
     itemKey,
     className,
     children,
-    display = true,
+    display,
     order,
   } = props;
+
+  const mergedHidden = responsive && !display;
 
   // ================================ Effect ================================
   function internalRegisterSize(width: number) {
@@ -48,11 +50,11 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
     <div
       className={classNames(prefixCls, className)}
       style={{
-        opacity: display ? 1 : 0.2,
-        height: display ? undefined : 0,
+        opacity: mergedHidden ? 0.2 : 1,
+        height: mergedHidden ? 0 : undefined,
         overflowY: responsive ? 'hidden' : undefined,
         order: responsive ? order : undefined,
-        pointerEvents: 'none',
+        pointerEvents: mergedHidden ? 'none' : undefined,
       }}
     >
       {childNode}

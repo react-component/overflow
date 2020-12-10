@@ -54,8 +54,11 @@ function Overflow<ItemType = any>(
     if (isResponsive) {
       return data.slice(0, Math.min(data.length, containerWidth / itemWidth));
     }
-    return data;
+    return typeof maxCount === 'number' ? data.slice(0, maxCount) : data;
   }, [data, itemWidth, containerWidth, maxCount]);
+
+  // When is `responsive`, we will always render rest node to get the real width of it for calculation
+  const showRest = isResponsive || data.length > maxCount!;
 
   // ================================= Item =================================
   const getKey = React.useCallback(
@@ -154,16 +157,18 @@ function Overflow<ItemType = any>(
       })}
 
       {/* Rest Count Item */}
-      <Item
-        order={displayCount}
-        prefixCls={itemPrefixCls}
-        className={`${itemPrefixCls}-rest`}
-        responsive={isResponsive}
-        registerSize={registerOverflowSize}
-        display={restReady}
-      >
-        Overflow
-      </Item>
+      {showRest ? (
+        <Item
+          order={displayCount}
+          prefixCls={itemPrefixCls}
+          className={`${itemPrefixCls}-rest`}
+          responsive={isResponsive}
+          registerSize={registerOverflowSize}
+          display={restReady && displayCount < data.length}
+        >
+          Overflow
+        </Item>
+      ) : null}
     </div>
   );
 

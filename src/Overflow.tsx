@@ -61,7 +61,6 @@ function Overflow<ItemType = any>(
   // ================================= Size =================================
   function onOverflowResize(_: object, element: HTMLElement) {
     setContainerWidth(element.clientWidth);
-    console.log('~~~???>>>', element.clientWidth, element);
   }
 
   function registerSize(key: React.Key, width: number) {
@@ -83,7 +82,6 @@ function Overflow<ItemType = any>(
 
   // ================================ Effect ================================
   React.useLayoutEffect(() => {
-    console.log('Effect >>>', containerWidth, itemWidths, overflowWidth);
     if (containerWidth && overflowWidth && data) {
       let totalWidth = 0;
 
@@ -92,16 +90,6 @@ function Overflow<ItemType = any>(
       for (let i = 0; i < len; i += 1) {
         const itemWidth = itemWidths.get(getKey(data[i], i)) || 0;
         totalWidth += itemWidth;
-        console.log(
-          i,
-          '>>>',
-          totalWidth,
-          itemWidth,
-          overflowWidth,
-          '|',
-          totalWidth + overflowWidth,
-          containerWidth,
-        );
 
         if (totalWidth + overflowWidth > containerWidth) {
           setDisplayCount(i - 1);
@@ -122,6 +110,7 @@ function Overflow<ItemType = any>(
 
         return (
           <Item<ItemType>
+            order={index}
             key={key}
             item={item}
             prefixCls={itemPrefixCls}
@@ -134,9 +123,11 @@ function Overflow<ItemType = any>(
         );
       })}
 
+      {/* Rest Count Item */}
       <Item
+        order={displayCount}
         prefixCls={itemPrefixCls}
-        className={`${itemPrefixCls}-overflow`}
+        className={`${itemPrefixCls}-rest`}
         disabled={disabled}
         registerSize={registerOverflowSize}
       >

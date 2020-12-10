@@ -1,7 +1,6 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
-import { getFullWidth } from './util';
 
 export interface ItemProps<ItemType> {
   prefixCls: string;
@@ -13,6 +12,7 @@ export interface ItemProps<ItemType> {
   registerSize: (key: React.Key, width: number) => void;
   children?: React.ReactNode;
   display?: boolean;
+  order: number;
 }
 
 export default function Item<ItemType>(props: ItemProps<ItemType>) {
@@ -26,6 +26,7 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
     className,
     children,
     display = true,
+    order,
   } = props;
 
   // ================================ Effect ================================
@@ -46,7 +47,7 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
   let itemNode = (
     <div
       className={classNames(prefixCls, className)}
-      style={{ opacity: display ? 1 : 0.2 }}
+      style={{ opacity: display ? 1 : 0.2, order }}
     >
       {childNode}
     </div>
@@ -55,9 +56,8 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
   if (!disabled) {
     itemNode = (
       <ResizeObserver
-        onResize={(_, element) => {
-          const width = getFullWidth(element);
-          internalRegisterSize(width);
+        onResize={({ offsetWidth }) => {
+          internalRegisterSize(offsetWidth);
         }}
       >
         {itemNode}

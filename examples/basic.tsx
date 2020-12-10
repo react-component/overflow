@@ -11,10 +11,24 @@ interface ItemType {
 function createData(count: number): ItemType[] {
   const data: ItemType[] = new Array(count).fill(undefined).map((_, index) => ({
     value: index,
-    label: `Label${index}`,
+    label: `Label ${index}`,
   }));
 
   return data;
+}
+
+function renderItem(item: ItemType) {
+  return (
+    <div
+      style={{
+        margin: '0 16px 0 8px',
+        padding: '4px 8px',
+        background: 'rgba(255, 0, 0, 0.2)',
+      }}
+    >
+      {item.label}
+    </div>
+  );
 }
 
 const Demo = () => {
@@ -44,7 +58,7 @@ const Demo = () => {
           marginTop: 32,
         }}
       >
-        <Overflow<ItemType> data={data} renderItem={(item) => item.label} />
+        <Overflow<ItemType> data={data} renderItem={renderItem} />
       </div>
     </div>
   );

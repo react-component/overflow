@@ -10,6 +10,7 @@ export interface OverflowProps<ItemType> {
   style?: React.CSSProperties;
   data?: ItemType[];
   itemKey?: React.Key | ((item: ItemType) => React.Key);
+  itemWidth?: number;
   renderItem?: (item: ItemType) => React.ReactNode;
   disabled?: boolean;
   maxCount?: number | 'responsive';
@@ -24,6 +25,7 @@ function Overflow<ItemType = any>(
     data = [],
     renderItem,
     itemKey,
+    itemWidth,
     style,
     className,
     disabled,

@@ -88,7 +88,15 @@ function Overflow<ItemType = any>(
       const len = data.length;
 
       for (let i = 0; i < len; i += 1) {
-        const itemWidth = itemWidths.get(getKey(data[i], i)) || 0;
+        const itemWidth = itemWidths.get(getKey(data[i], i));
+
+        // Break since data not ready
+        if (itemWidth === undefined) {
+          setDisplayCount(i - 1);
+          break;
+        }
+
+        // Find best match
         totalWidth += itemWidth;
 
         if (totalWidth + overflowWidth > containerWidth) {

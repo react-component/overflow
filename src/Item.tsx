@@ -47,7 +47,7 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
   let itemNode = (
     <div
       className={classNames(prefixCls, className)}
-      style={{ opacity: display ? 1 : 0.2, order }}
+      style={{ opacity: display ? 1 : 0, order, pointerEvents: 'none' }}
     >
       {childNode}
     </div>

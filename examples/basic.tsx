@@ -32,7 +32,7 @@ function renderItem(item: ItemType) {
 }
 
 const Demo = () => {
-  const [data, setData] = React.useState(createData(5));
+  const [data, setData] = React.useState(createData(1));
 
   return (
     <div style={{ padding: 32 }}>

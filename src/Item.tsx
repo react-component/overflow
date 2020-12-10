@@ -7,7 +7,7 @@ export interface ItemProps<ItemType> {
   item?: ItemType;
   className?: string;
   renderItem?: (item: ItemType) => React.ReactNode;
-  disabled?: boolean;
+  responsive?: boolean;
   itemKey?: React.Key;
   registerSize: (key: React.Key, width: number) => void;
   children?: React.ReactNode;
@@ -20,7 +20,7 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
     prefixCls,
     item,
     renderItem,
-    disabled,
+    responsive,
     registerSize,
     itemKey,
     className,
@@ -49,9 +49,9 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
       className={classNames(prefixCls, className)}
       style={{
         opacity: display ? 1 : 0.2,
-        // height: display ? undefined : 0,
-        // overflowY: disabled ? undefined : 'hidden',
-        order,
+        height: display ? undefined : 0,
+        overflowY: responsive ? 'hidden' : undefined,
+        order: responsive ? order : undefined,
         pointerEvents: 'none',
       }}
     >
@@ -59,7 +59,7 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
     </div>
   );
 
-  if (!disabled) {
+  if (responsive) {
     itemNode = (
       <ResizeObserver
         onResize={({ offsetWidth }) => {

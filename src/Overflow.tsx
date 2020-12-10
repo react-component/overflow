@@ -30,22 +30,32 @@ function Overflow<ItemType = any>(
     itemWidth = 10,
     style,
     className,
-    maxCount = RESPONSIVE,
+    maxCount,
   } = props;
 
   const createUseState = useBatchFrameState();
-  const disabled = maxCount !== RESPONSIVE;
+  // const disabled = maxCount !== RESPONSIVE;
 
   const [containerWidth, setContainerWidth] = createUseState(0);
   const [itemWidths, setItemWidths] = createUseState(
     new Map<React.Key, number>(),
   );
-  const [overflowWidth, setOverflowWidth] = createUseState(0);
+  const [restWidth, setRestWidth] = createUseState(0);
 
   const [displayCount, setDisplayCount] = React.useState(0);
   const [restReady, setRestReady] = React.useState(false);
 
   const itemPrefixCls = `${prefixCls}-item`;
+
+  // ================================= Data =================================
+  const isResponsive = maxCount === RESPONSIVE;
+
+  const mergedData = React.useMemo(() => {
+    if (isResponsive) {
+      return data.slice(0, Math.min(data.length, containerWidth / itemWidth));
+    }
+    return data;
+  }, [data, itemWidth, containerWidth, maxCount]);
 
   // ================================= Item =================================
   const getKey = React.useCallback(
@@ -89,18 +99,12 @@ function Overflow<ItemType = any>(
   }
 
   function registerOverflowSize(_: React.Key, width: number) {
-    setOverflowWidth(width);
+    setRestWidth(width);
   }
-
-  // ================================= Data =================================
-  const mergedData = React.useMemo(
-    () => data.slice(0, Math.min(data.length, containerWidth / itemWidth)),
-    [data, itemWidth, containerWidth],
-  );
 
   // ================================ Effect ================================
   React.useLayoutEffect(() => {
-    if (containerWidth && overflowWidth && mergedData) {
+    if (containerWidth && restWidth && mergedData) {
       let totalWidth = 0;
 
       const len = mergedData.length;
@@ -117,7 +121,7 @@ function Overflow<ItemType = any>(
         // Find best match
         totalWidth += currentItemWidth;
 
-        if (totalWidth + overflowWidth > containerWidth) {
+        if (totalWidth + restWidth > containerWidth) {
           updateDisplayCount(i - 1);
           break;
         } else if (i === len - 1) {
@@ -126,7 +130,7 @@ function Overflow<ItemType = any>(
         }
       }
     }
-  }, [containerWidth, itemWidths, overflowWidth, getKey, mergedData]);
+  }, [containerWidth, itemWidths, restWidth, getKey, mergedData]);
 
   // ================================ Render ================================
   let overflowNode = (
@@ -143,7 +147,7 @@ function Overflow<ItemType = any>(
             renderItem={mergedRenderItem}
             itemKey={key}
             registerSize={registerSize}
-            disabled={disabled}
+            responsive={isResponsive}
             display={index <= displayCount}
           />
         );
@@ -154,7 +158,7 @@ function Overflow<ItemType = any>(
         order={displayCount}
         prefixCls={itemPrefixCls}
         className={`${itemPrefixCls}-rest`}
-        disabled={disabled}
+        responsive={isResponsive}
         registerSize={registerOverflowSize}
         display={restReady}
       >
@@ -163,7 +167,7 @@ function Overflow<ItemType = any>(
     </div>
   );
 
-  if (!disabled) {
+  if (isResponsive) {
     overflowNode = (
       <ResizeObserver onResize={onOverflowResize}>
         {overflowNode}

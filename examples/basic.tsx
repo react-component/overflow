@@ -32,7 +32,7 @@ function renderItem(item: ItemType) {
 }
 
 const Demo = () => {
-  const [responsive, setResponsive] = React.useState(false);
+  const [responsive, setResponsive] = React.useState(true);
   const [data, setData] = React.useState(createData(5));
 
   return (

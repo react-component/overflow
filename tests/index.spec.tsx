@@ -57,7 +57,7 @@ describe('Overflow', () => {
         <Overflow
           data={getData(6)}
           renderItem={renderItem}
-          renderRest={(omittedItems) => `Bamboo: ${omittedItems.length}`}
+          renderRest={omittedItems => `Bamboo: ${omittedItems.length}`}
           maxCount={3}
         />,
       );
@@ -92,7 +92,7 @@ describe('Overflow', () => {
         <Overflow
           data={getData(1)}
           renderItem={renderItem}
-          itemKey={(item) => `bamboo-${item.key}`}
+          itemKey={item => `bamboo-${item.key}`}
         />,
       );
 

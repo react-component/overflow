@@ -3,6 +3,10 @@ import Overflow from '../src';
 import '../assets/index.less';
 import './common.less';
 
+const overflowSharedStyle: React.CSSProperties = {
+  background: 'rgba(0, 255, 0, 0.1)',
+};
+
 interface ItemType {
   value: string | number;
   label: string;
@@ -37,6 +41,7 @@ function renderRest(items: ItemType[]) {
 }
 
 const data = createData(5);
+const data2 = createData(2);
 
 const Demo = () => {
   return (
@@ -46,13 +51,22 @@ const Demo = () => {
       </p>
       <div
         style={{
-          boxShadow: '0 0 1px green',
-          maxWidth: 300,
+          border: '10px solid green',
           marginTop: 32,
+          display: 'inline-block',
         }}
       >
         <Overflow<ItemType>
           data={data}
+          style={{ width: 300, ...overflowSharedStyle }}
+          renderItem={renderItem}
+          renderRest={renderRest}
+          maxCount="responsive"
+        />
+
+        <Overflow<ItemType>
+          data={data2}
+          style={{ width: 180, ...overflowSharedStyle }}
           renderItem={renderItem}
           renderRest={renderRest}
           maxCount="responsive"

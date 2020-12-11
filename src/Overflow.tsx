@@ -42,7 +42,6 @@ function Overflow<ItemType = any>(
   } = props;
 
   const createUseState = useBatchFrameState();
-  // const disabled = maxCount !== RESPONSIVE;
 
   const [containerWidth, setContainerWidth] = createUseState(0);
   const [itemWidths, setItemWidths] = createUseState(

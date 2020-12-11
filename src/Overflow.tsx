@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
 import Item from './Item';
@@ -53,8 +54,8 @@ function Overflow<ItemType = any>(
   // Always use the max width to avoid blink
   const mergedRestWidth = Math.max(prevRestWidth, restWidth);
 
-  const [displayCount, setDisplayCount] = React.useState(0);
-  const [restReady, setRestReady] = React.useState(false);
+  const [displayCount, setDisplayCount] = useState(0);
+  const [restReady, setRestReady] = useState(false);
 
   const itemPrefixCls = `${prefixCls}-item`;
 
@@ -66,7 +67,7 @@ function Overflow<ItemType = any>(
    */
   const showRest = isResponsive || data.length > maxCount!;
 
-  const mergedData = React.useMemo(() => {
+  const mergedData = useMemo(() => {
     let items = data;
 
     if (isResponsive) {
@@ -78,7 +79,7 @@ function Overflow<ItemType = any>(
     return items;
   }, [data, itemWidth, containerWidth, maxCount, isResponsive]);
 
-  const omittedItems = React.useMemo(() => {
+  const omittedItems = useMemo(() => {
     if (isResponsive) {
       return data.slice(displayCount + 1);
     }
@@ -86,7 +87,7 @@ function Overflow<ItemType = any>(
   }, [data, mergedData, isResponsive, displayCount]);
 
   // ================================= Item =================================
-  const getKey = React.useCallback(
+  const getKey = useCallback(
     (item: ItemType, index: number) => {
       if (typeof itemKey === 'function') {
         return itemKey(item);
@@ -96,7 +97,7 @@ function Overflow<ItemType = any>(
     [itemKey],
   );
 
-  const mergedRenderItem = React.useCallback(
+  const mergedRenderItem = useCallback(
     renderItem || ((item: ItemType) => item),
     [renderItem],
   );

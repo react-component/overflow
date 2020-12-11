@@ -1,4 +1,5 @@
 import React from 'react';
+import { act } from 'react-dom/test-utils';
 import Overflow from '../src';
 import { mount } from './wrapper';
 
@@ -39,15 +40,25 @@ describe('Overflow.Responsive', () => {
     wrapper.initSize(100, 20); // [0][1][2][3][4][+2](5)(6)
     expect(wrapper.findItems()).toHaveLength(6);
     [true, true, true, true, false, false].forEach((display, i) => {
-      expect(
-        wrapper
-          .findItems()
-          .at(i)
-          .props().display,
-      ).toBe(display);
+      expect(wrapper.findItems().at(i).props().display).toBe(display);
     });
     expect(wrapper.findRest()).toHaveLength(1);
     expect(wrapper.findRest().text()).toEqual('+ 2 ...');
+  });
+
+  it('only one', () => {
+    const wrapper = mount(
+      <Overflow<ItemType>
+        data={getData(1)}
+        itemKey="key"
+        renderItem={renderItem}
+        maxCount="responsive"
+      />,
+    );
+    wrapper.initSize(100, 20);
+
+    expect(wrapper.findItems()).toHaveLength(1);
+    expect(wrapper.findRest().props().display).toBeFalsy();
   });
 
   it('remove to clean up', () => {
@@ -63,19 +74,35 @@ describe('Overflow.Responsive', () => {
     );
     wrapper.initSize(100, 20);
 
-    // Remove one
+    // Remove one (Just fit the container width)
     const newData = [...data];
     newData.splice(1, 1);
     wrapper.setProps({ data: newData });
+    wrapper.update();
 
     expect(wrapper.findItems()).toHaveLength(5);
-    expect(wrapper.findRest().text()).toEqual('+ 1 ...');
+    expect(wrapper.findRest().props().display).toBeFalsy();
+
+    // Remove one (More place for container)
+    const restData = [...newData];
+    restData.splice(1, 2);
+    restData.push({
+      label: 'Additional',
+      key: 'additional',
+    });
+    wrapper.setProps({ data: restData });
+    wrapper.update();
+
+    expect(wrapper.findItems()).toHaveLength(4);
+    expect(wrapper.findRest().props().display).toBeFalsy();
   });
 
   it('none to overflow', () => {
+    const data = getData(5);
+
     const wrapper = mount(
       <Overflow<ItemType>
-        data={getData(5)}
+        data={data}
         itemKey="key"
         renderItem={renderItem}
         maxCount="responsive"
@@ -85,5 +112,44 @@ describe('Overflow.Responsive', () => {
     wrapper.initSize(100, 20);
     expect(wrapper.findItems()).toHaveLength(5);
     expect(wrapper.findRest().props().display).toBeFalsy();
+
+    // Add one
+    const newData: ItemType[] = [
+      {
+        label: 'Additional',
+        key: 'additional',
+      },
+      ...data,
+    ];
+    wrapper.setProps({ data: newData });
+    wrapper.update();
+
+    // Currently resize observer not trigger, rest node is not ready
+    expect(wrapper.findItems()).toHaveLength(6);
+    expect(wrapper.findRest().props().display).toBeFalsy();
+
+    // Trigger resize, node ready
+    wrapper.triggerItemResize(0, 20);
+    expect(wrapper.findItems()).toHaveLength(6);
+    expect(wrapper.findRest().props().display).toBeTruthy();
+  });
+
+  it('unmount no error', () => {
+    const wrapper = mount(
+      <Overflow<ItemType>
+        data={getData(1)}
+        itemKey="key"
+        renderItem={renderItem}
+        maxCount="responsive"
+      />,
+    );
+
+    wrapper.initSize(100, 20);
+
+    wrapper.unmount();
+
+    act(() => {
+      jest.runAllTimers();
+    });
   });
 });

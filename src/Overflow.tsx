@@ -61,7 +61,9 @@ function Overflow<ItemType = any>(
   // ================================= Data =================================
   const isResponsive = maxCount === RESPONSIVE;
 
-  // When is `responsive`, we will always render rest node to get the real width of it for calculation
+  /**
+   * When is `responsive`, we will always render rest node to get the real width of it for calculation
+   */
   const showRest = isResponsive || data.length > maxCount!;
 
   const mergedData = React.useMemo(() => {
@@ -125,7 +127,7 @@ function Overflow<ItemType = any>(
   }
 
   function registerOverflowSize(_: React.Key, width: number | null) {
-    setRestWidth(width || 0);
+    setRestWidth(width!);
     setPrevRestWidth(restWidth);
   }
 
@@ -154,9 +156,8 @@ function Overflow<ItemType = any>(
         totalWidth += currentItemWidth;
 
         if (
-          (i === lastIndex - 1 &&
-            totalWidth + getItemWidth(lastIndex)! <= containerWidth) ||
-          i === lastIndex
+          i === lastIndex - 1 &&
+          totalWidth + getItemWidth(lastIndex)! <= containerWidth
         ) {
           // Additional check if match the end
           updateDisplayCount(lastIndex);
@@ -203,7 +204,7 @@ function Overflow<ItemType = any>(
           className={`${itemPrefixCls}-rest`}
           responsive={isResponsive}
           registerSize={registerOverflowSize}
-          display={restReady && displayCount < data.length}
+          display={restReady && !!omittedItems.length}
         >
           {typeof renderRest === 'function'
             ? renderRest(omittedItems)

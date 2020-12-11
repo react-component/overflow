@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import raf from 'rc-util/lib/raf';
 
 /**
@@ -8,8 +8,16 @@ import raf from 'rc-util/lib/raf';
 export function useBatchFrameState() {
   const [, forceUpdate] = useState({});
   const statesRef = useRef<any[]>([]);
+  const destroyRef = useRef<boolean>(false);
   let walkingIndex = 0;
   let beforeFrameId: number = 0;
+
+  useEffect(
+    () => () => {
+      destroyRef.current = true;
+    },
+    [],
+  );
 
   function createState<T>(
     defaultValue: T,
@@ -33,7 +41,9 @@ export function useBatchFrameState() {
 
       // Flush with batch
       beforeFrameId = raf(() => {
-        forceUpdate({});
+        if (!destroyRef.current) {
+          forceUpdate({});
+        }
       });
     }
 

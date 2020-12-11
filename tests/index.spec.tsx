@@ -19,6 +19,11 @@ describe('Overflow', () => {
     }));
   }
 
+  it('no data', () => {
+    const wrapper = mount(<Overflow<ItemType> />);
+    expect(wrapper.findItems()).toHaveLength(0);
+  });
+
   it('no maxCount', () => {
     const wrapper = mount(
       <Overflow<ItemType> data={getData(6)} renderItem={renderItem} />,
@@ -46,17 +51,32 @@ describe('Overflow', () => {
     expect(wrapper.find('Item').text()).toEqual('Bamboo Is Light');
   });
 
-  it('renderRest', () => {
-    const wrapper = mount(
-      <Overflow
-        data={getData(6)}
-        renderItem={renderItem}
-        renderRest={omittedItems => `Bamboo: ${omittedItems.length}`}
-        maxCount={3}
-      />,
-    );
+  describe('renderRest', () => {
+    it('function', () => {
+      const wrapper = mount(
+        <Overflow
+          data={getData(6)}
+          renderItem={renderItem}
+          renderRest={(omittedItems) => `Bamboo: ${omittedItems.length}`}
+          maxCount={3}
+        />,
+      );
 
-    expect(wrapper.findRest().text()).toEqual('Bamboo: 3');
+      expect(wrapper.findRest().text()).toEqual('Bamboo: 3');
+    });
+
+    it('node', () => {
+      const wrapper = mount(
+        <Overflow
+          data={getData(6)}
+          renderItem={renderItem}
+          renderRest={<span>Light Is Bamboo</span>}
+          maxCount={3}
+        />,
+      );
+
+      expect(wrapper.findRest().text()).toEqual('Light Is Bamboo');
+    });
   });
 
   describe('itemKey', () => {
@@ -72,7 +92,7 @@ describe('Overflow', () => {
         <Overflow
           data={getData(1)}
           renderItem={renderItem}
-          itemKey={item => `bamboo-${item.key}`}
+          itemKey={(item) => `bamboo-${item.key}`}
         />,
       );
 

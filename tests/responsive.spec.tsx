@@ -39,7 +39,12 @@ describe('Overflow.Responsive', () => {
     wrapper.initSize(100, 20); // [0][1][2][3][4][+2](5)(6)
     expect(wrapper.findItems()).toHaveLength(6);
     [true, true, true, true, false, false].forEach((display, i) => {
-      expect(wrapper.findItems().at(i).props().display).toBe(display);
+      expect(
+        wrapper
+          .findItems()
+          .at(i)
+          .props().display,
+      ).toBe(display);
     });
     expect(wrapper.findRest()).toHaveLength(1);
     expect(wrapper.findRest().text()).toEqual('+ 2 ...');

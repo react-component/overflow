@@ -130,14 +130,19 @@ function Overflow<ItemType = any>(
   }
 
   // ================================ Effect ================================
+  function getItemWidth(index: number) {
+    return itemWidths.get(getKey(mergedData[index], index));
+  }
+
   React.useLayoutEffect(() => {
     if (containerWidth && mergedRestWidth && mergedData) {
       let totalWidth = 0;
 
       const len = mergedData.length;
+      const lastIndex = len - 1;
 
       for (let i = 0; i < len; i += 1) {
-        const currentItemWidth = itemWidths.get(getKey(mergedData[i], i));
+        const currentItemWidth = getItemWidth(i);
 
         // Break since data not ready
         if (currentItemWidth === undefined) {
@@ -148,11 +153,21 @@ function Overflow<ItemType = any>(
         // Find best match
         totalWidth += currentItemWidth;
 
-        if (totalWidth + mergedRestWidth > containerWidth) {
+        if (
+          (i === lastIndex - 1 &&
+            totalWidth + getItemWidth(lastIndex)! <= containerWidth) ||
+          i === lastIndex
+        ) {
+          // Additional check if match the end
+          updateDisplayCount(lastIndex);
+          break;
+        } else if (totalWidth + mergedRestWidth > containerWidth) {
+          // Can not hold all the content to show rest
           updateDisplayCount(i - 1);
           break;
-        } else if (i === len - 1) {
-          updateDisplayCount(len - 1);
+        } else if (i === lastIndex) {
+          // Reach the end
+          updateDisplayCount(lastIndex);
           break;
         }
       }

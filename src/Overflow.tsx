@@ -48,7 +48,11 @@ function Overflow<ItemType = any>(
   const [itemWidths, setItemWidths] = createUseState(
     new Map<React.Key, number>(),
   );
+
+  const [prevRestWidth, setPrevRestWidth] = createUseState(0);
   const [restWidth, setRestWidth] = createUseState(0);
+  // Always use the max width to avoid blink
+  const mergedRestWidth = Math.max(prevRestWidth, restWidth);
 
   const [displayCount, setDisplayCount] = React.useState(0);
   const [restReady, setRestReady] = React.useState(false);
@@ -123,11 +127,12 @@ function Overflow<ItemType = any>(
 
   function registerOverflowSize(_: React.Key, width: number) {
     setRestWidth(width);
+    setPrevRestWidth(restWidth);
   }
 
   // ================================ Effect ================================
   React.useLayoutEffect(() => {
-    if (containerWidth && restWidth && mergedData) {
+    if (containerWidth && mergedRestWidth && mergedData) {
       let totalWidth = 0;
 
       const len = mergedData.length;
@@ -144,7 +149,7 @@ function Overflow<ItemType = any>(
         // Find best match
         totalWidth += currentItemWidth;
 
-        if (totalWidth + restWidth > containerWidth) {
+        if (totalWidth + mergedRestWidth > containerWidth) {
           updateDisplayCount(i - 1);
           break;
         } else if (i === len - 1) {
@@ -153,7 +158,7 @@ function Overflow<ItemType = any>(
         }
       }
     }
-  }, [containerWidth, itemWidths, restWidth, getKey, mergedData]);
+  }, [containerWidth, itemWidths, mergedRestWidth, getKey, mergedData]);
 
   // ================================ Render ================================
   let overflowNode = (

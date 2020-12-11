@@ -47,7 +47,7 @@ function renderRest(items: ItemType[]) {
 
 const Demo = () => {
   const [responsive, setResponsive] = React.useState(true);
-  const [data, setData] = React.useState(createData(5));
+  const [data, setData] = React.useState(createData(1));
 
   return (
     <div style={{ padding: 32 }}>

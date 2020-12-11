@@ -41,6 +41,9 @@ const data = createData(5);
 const Demo = () => {
   return (
     <div style={{ padding: 32 }}>
+      <p>
+        Test for a edge case that rest can not decide the final display count
+      </p>
       <div
         style={{
           boxShadow: '0 0 1px green',

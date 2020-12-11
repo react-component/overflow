@@ -24,7 +24,7 @@ describe('Overflow', () => {
       <Overflow<ItemType> data={getData(6)} renderItem={renderItem} />,
     );
     expect(wrapper.find('ResizeObserver')).toHaveLength(0);
-    expect(wrapper.find('div.rc-overflow-item')).toHaveLength(6);
+    expect(wrapper.findItems()).toHaveLength(6);
     expect(wrapper.findRest()).toHaveLength(0);
   });
 
@@ -37,7 +37,7 @@ describe('Overflow', () => {
       />,
     );
     expect(wrapper.find('ResizeObserver')).toHaveLength(0);
-    expect(wrapper.find('div.rc-overflow-item')).toHaveLength(4 + 1);
+    expect(wrapper.findItems()).toHaveLength(4 + 1);
     expect(wrapper.findRest()).toHaveLength(1);
   });
 

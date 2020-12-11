@@ -159,6 +159,9 @@ function Overflow<ItemType = any>(
       }
     }
   }, [containerWidth, itemWidths, mergedRestWidth, getKey, mergedData]);
+  
+
+  console.log('>>>', displayCount);
 
   // ================================ Render ================================
   let overflowNode = (

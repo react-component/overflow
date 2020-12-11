@@ -6,6 +6,7 @@ export interface WrapperType extends ReactWrapper {
   triggerResize: (offsetWidth: number) => WrapperType;
   triggerItemResize: (index: number, offsetWidth: number) => WrapperType;
   initSize: (width: number, itemWidth: number) => WrapperType;
+  findItems: () => WrapperType;
   findRest: () => WrapperType;
 }
 

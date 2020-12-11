@@ -10,12 +10,14 @@ window.requestAnimationFrame = func => {
 Enzyme.configure({ adapter: new Adapter() });
 
 Object.assign(Enzyme.ReactWrapper.prototype, {
-  triggerResize(offsetWidth) {
+  triggerResize(clientWidth) {
     act(() => {
       this.find('ResizeObserver')
         .first()
         .props()
-        .onResize({ offsetWidth });
+        .onResize({}, { clientWidth });
+      jest.runAllTimers();
+      this.update();
     });
   },
   triggerItemResize(index, offsetWidth) {
@@ -25,11 +27,18 @@ Object.assign(Enzyme.ReactWrapper.prototype, {
         .find('ResizeObserver')
         .props()
         .onResize({ offsetWidth });
+      jest.runAllTimers();
+      this.update();
     });
   },
   initSize(width, itemWidth) {
     this.triggerResize(width);
-    this.triggerItemResize(itemWidth);
+    this.find('Item').forEach((_, index) => {
+      this.triggerItemResize(index, itemWidth);
+    });
+  },
+  findItems() {
+    return this.find('div.rc-overflow-item');
   },
   findRest() {
     return this.find('div.rc-overflow-item-rest');

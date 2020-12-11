@@ -3,8 +3,8 @@ import Overflow from '../src';
 import { mount } from './wrapper';
 
 interface ItemType {
-  label: string;
-  key: number;
+  label: React.ReactNode;
+  key: React.Key;
 }
 
 function renderItem(item: ItemType) {
@@ -15,7 +15,7 @@ describe('Overflow', () => {
   function getData(count: number) {
     return new Array(count).fill(undefined).map((_, index) => ({
       label: `Label ${index}`,
-      key: index,
+      key: `k-${index}`,
     }));
   }
 
@@ -41,16 +41,42 @@ describe('Overflow', () => {
     expect(wrapper.findRest()).toHaveLength(1);
   });
 
+  it('without renderItem', () => {
+    const wrapper = mount(<Overflow data={[<span>Bamboo Is Light</span>]} />);
+    expect(wrapper.find('Item').text()).toEqual('Bamboo Is Light');
+  });
+
   it('renderRest', () => {
     const wrapper = mount(
       <Overflow
         data={getData(6)}
         renderItem={renderItem}
-        renderRest={(omittedItems) => `Bamboo: ${omittedItems.length}`}
+        renderRest={omittedItems => `Bamboo: ${omittedItems.length}`}
         maxCount={3}
       />,
     );
 
     expect(wrapper.findRest().text()).toEqual('Bamboo: 3');
+  });
+
+  describe('itemKey', () => {
+    it('string', () => {
+      const wrapper = mount(
+        <Overflow data={getData(1)} renderItem={renderItem} itemKey="key" />,
+      );
+
+      expect(wrapper.find('Item').key()).toEqual('k-0');
+    });
+    it('function', () => {
+      const wrapper = mount(
+        <Overflow
+          data={getData(1)}
+          renderItem={renderItem}
+          itemKey={item => `bamboo-${item.key}`}
+        />,
+      );
+
+      expect(wrapper.find('Item').key()).toEqual('bamboo-k-0');
+    });
   });
 });

@@ -59,12 +59,17 @@ const Demo = () => {
   const [responsive, setResponsive] = React.useState(true);
   const [inputValue, setInputValue] = React.useState('');
   const [inputWidth, setInputWidth] = React.useState(0);
-  const [data, setData] = React.useState(createData(1));
+  const [data, setData] = React.useState(createData(3));
+  const inputRef = React.useRef<HTMLInputElement>();
   const measureRef = React.useRef<HTMLDivElement>();
 
   React.useLayoutEffect(() => {
     setInputWidth(measureRef.current.offsetWidth);
   }, [inputValue]);
+
+  React.useEffect(() => {
+    inputRef.current.focus();
+  }, []);
 
   return (
     <div style={{ padding: 32 }}>
@@ -117,9 +122,10 @@ const Demo = () => {
                   maxWidth: '100%',
                 }}
                 value={inputValue}
-                onChange={(e) => {
+                onChange={e => {
                   setInputValue(e.target.value);
                 }}
+                ref={inputRef}
               />
               <div
                 style={{

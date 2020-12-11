@@ -20,6 +20,7 @@ export interface OverflowProps<ItemType> {
   renderRest?:
     | React.ReactNode
     | ((omittedItems: ItemType[]) => React.ReactNode);
+  suffix?: React.ReactNode;
 }
 
 function defaultRenderRest<ItemType>(omittedItems: ItemType[]) {
@@ -40,6 +41,7 @@ function Overflow<ItemType = any>(
     className,
     maxCount,
     renderRest = defaultRenderRest,
+    suffix,
   } = props;
 
   const createUseState = useBatchFrameState();
@@ -51,13 +53,16 @@ function Overflow<ItemType = any>(
 
   const [prevRestWidth, setPrevRestWidth] = createUseState(0);
   const [restWidth, setRestWidth] = createUseState(0);
-  // Always use the max width to avoid blink
-  const mergedRestWidth = Math.max(prevRestWidth, restWidth);
+
+  const [suffixWidth, setSuffixWidth] = createUseState(0);
 
   const [displayCount, setDisplayCount] = useState(0);
   const [restReady, setRestReady] = useState(false);
 
   const itemPrefixCls = `${prefixCls}-item`;
+
+  // Always use the max width to avoid blink
+  const mergedRestWidth = Math.max(prevRestWidth, restWidth);
 
   // ================================= Data =================================
   const isResponsive = maxCount === RESPONSIVE;
@@ -132,6 +137,10 @@ function Overflow<ItemType = any>(
     setPrevRestWidth(restWidth);
   }
 
+  function registerSuffixSize(_: React.Key, width: number | null) {
+    setSuffixWidth(width!);
+  }
+
   // ================================ Effect ================================
   function getItemWidth(index: number) {
     return itemWidths.get(getKey(mergedData[index], index));
@@ -139,7 +148,7 @@ function Overflow<ItemType = any>(
 
   React.useLayoutEffect(() => {
     if (containerWidth && mergedRestWidth && mergedData) {
-      let totalWidth = 0;
+      let totalWidth = suffixWidth;
 
       const len = mergedData.length;
       const lastIndex = len - 1;
@@ -174,9 +183,18 @@ function Overflow<ItemType = any>(
         }
       }
     }
-  }, [containerWidth, itemWidths, mergedRestWidth, getKey, mergedData]);
+  }, [
+    containerWidth,
+    itemWidths,
+    mergedRestWidth,
+    suffixWidth,
+    getKey,
+    mergedData,
+  ]);
 
   // ================================ Render ================================
+  const displayRest = restReady && !!omittedItems.length;
+
   let overflowNode = (
     <div className={classNames(prefixCls, className)} style={style} ref={ref}>
       {mergedData.map((item, index) => {
@@ -200,18 +218,32 @@ function Overflow<ItemType = any>(
       {/* Rest Count Item */}
       {showRest ? (
         <Item
-          order={displayCount}
+          order={displayRest ? displayCount : mergedData.length}
           prefixCls={itemPrefixCls}
           className={`${itemPrefixCls}-rest`}
           responsive={isResponsive}
           registerSize={registerOverflowSize}
-          display={restReady && !!omittedItems.length}
+          display={displayRest}
         >
           {typeof renderRest === 'function'
             ? renderRest(omittedItems)
             : renderRest}
         </Item>
       ) : null}
+
+      {/* Suffix Node */}
+      {suffix && (
+        <Item
+          order={displayCount}
+          prefixCls={prefixCls}
+          className={`${itemPrefixCls}-suffix`}
+          responsive={isResponsive}
+          registerSize={registerSuffixSize}
+          display
+        >
+          {suffix}
+        </Item>
+      )}
     </div>
   );
 

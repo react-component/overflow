@@ -55,6 +55,7 @@ function Overflow<ItemType = any>(
   const [restWidth, setRestWidth] = createUseState(0);
 
   const [suffixWidth, setSuffixWidth] = createUseState(0);
+  const [suffixFixedStart, setSuffixFixedStart] = useState<number>(null);
 
   const [displayCount, setDisplayCount] = useState(0);
   const [restReady, setRestReady] = useState(false);
@@ -171,16 +172,25 @@ function Overflow<ItemType = any>(
         ) {
           // Additional check if match the end
           updateDisplayCount(lastIndex);
+          setSuffixFixedStart(null);
           break;
         } else if (totalWidth + mergedRestWidth > containerWidth) {
           // Can not hold all the content to show rest
           updateDisplayCount(i - 1);
+          setSuffixFixedStart(
+            totalWidth - currentItemWidth - suffixWidth + mergedRestWidth,
+          );
           break;
         } else if (i === lastIndex) {
           // Reach the end
           updateDisplayCount(lastIndex);
+          setSuffixFixedStart(totalWidth - suffixWidth);
           break;
         }
+      }
+
+      if (suffix && getItemWidth(0) + suffixWidth > containerWidth) {
+        setSuffixFixedStart(null);
       }
     }
   }, [
@@ -194,6 +204,15 @@ function Overflow<ItemType = any>(
 
   // ================================ Render ================================
   const displayRest = restReady && !!omittedItems.length;
+
+  let suffixStyle: React.CSSProperties = {};
+  if (suffixFixedStart !== null) {
+    suffixStyle = {
+      position: 'absolute',
+      left: suffixFixedStart,
+      top: 0,
+    };
+  }
 
   let overflowNode = (
     <div className={classNames(prefixCls, className)} style={style} ref={ref}>
@@ -240,6 +259,7 @@ function Overflow<ItemType = any>(
           responsive={isResponsive}
           registerSize={registerSuffixSize}
           display
+          style={suffixStyle}
         >
           {suffix}
         </Item>

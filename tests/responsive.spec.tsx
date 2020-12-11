@@ -36,9 +36,9 @@ describe('Overflow.Responsive', () => {
       />,
     );
 
-    wrapper.initSize(100, 20); // [0][1][2][3][4][+2]
-    expect(wrapper.findItems()).toHaveLength(5);
+    wrapper.initSize(100, 20); // [0][1][2][3][4][+2](5)(6)
+    expect(wrapper.findItems()).toHaveLength(6);
     expect(wrapper.findRest()).toHaveLength(1);
-    expect(wrapper.findRest().text()).toEqual('+2...');
+    expect(wrapper.findRest().text()).toEqual('+ 2 ...');
   });
 });

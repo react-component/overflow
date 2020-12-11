@@ -37,7 +37,7 @@ describe('Overflow', () => {
       />,
     );
     expect(wrapper.find('ResizeObserver')).toHaveLength(0);
-    expect(wrapper.findItems()).toHaveLength(4 + 1);
+    expect(wrapper.findItems()).toHaveLength(4);
     expect(wrapper.findRest()).toHaveLength(1);
   });
 

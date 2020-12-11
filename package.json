@@ -51,30 +51,22 @@
     "@types/react": "^16.14.2",
     "@types/react-dom": "^16.9.10",
     "@umijs/fabric": "^2.0.8",
-    "coveralls": "^3.0.6",
     "cross-env": "^7.0.2",
     "enzyme": "^3.0.0",
     "enzyme-adapter-react-16": "^1.0.1",
     "enzyme-to-json": "^3.4.0",
     "eslint": "^7.0.0",
     "father": "^2.13.4",
-    "husky": "^4.2.5",
     "less": "^3.10.3",
     "np": "^7.0.0",
     "prettier": "^2.0.5",
-    "pretty-quick": "^3.0.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "react-test-renderer": "^16.0.0"
+    "regenerator-runtime": "^0.13.7"
   },
   "peerDependencies": {
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
   },
   "cnpm": {
     "mode": "npm"

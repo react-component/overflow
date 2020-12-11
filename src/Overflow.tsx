@@ -112,11 +112,11 @@ function Overflow<ItemType = any>(
     setContainerWidth(element.clientWidth);
   }
 
-  function registerSize(key: React.Key, width: number) {
+  function registerSize(key: React.Key, width: number | null) {
     setItemWidths((origin) => {
       const clone = new Map(origin);
 
-      if (!width) {
+      if (width === null) {
         clone.delete(key);
       } else {
         clone.set(key, width);
@@ -125,8 +125,8 @@ function Overflow<ItemType = any>(
     });
   }
 
-  function registerOverflowSize(_: React.Key, width: number) {
-    setRestWidth(width);
+  function registerOverflowSize(_: React.Key, width: number | null) {
+    setRestWidth(width || 0);
     setPrevRestWidth(restWidth);
   }
 

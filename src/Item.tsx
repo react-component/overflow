@@ -9,7 +9,7 @@ export interface ItemProps<ItemType> {
   renderItem?: (item: ItemType) => React.ReactNode;
   responsive?: boolean;
   itemKey?: React.Key;
-  registerSize: (key: React.Key, width: number) => void;
+  registerSize: (key: React.Key, width: number | null) => void;
   children?: React.ReactNode;
   display: boolean;
   order: number;
@@ -32,13 +32,13 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
   const mergedHidden = responsive && !display;
 
   // ================================ Effect ================================
-  function internalRegisterSize(width: number) {
+  function internalRegisterSize(width: number | null) {
     registerSize(itemKey!, width);
   }
 
   React.useEffect(
     () => () => {
-      internalRegisterSize(0);
+      internalRegisterSize(null);
     },
     [],
   );

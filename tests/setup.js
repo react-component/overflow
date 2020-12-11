@@ -10,20 +10,25 @@ window.requestAnimationFrame = (func) => {
 Enzyme.configure({ adapter: new Adapter() });
 
 Object.assign(Enzyme.ReactWrapper.prototype, {
-  triggerMotionEvent(target) {
-    const motionEvent = new Event('transitionend');
-    if (target) {
-      Object.defineProperty(motionEvent, 'target', {
-        get: () => target.getDOMNode(),
-      });
-    }
-
+  triggerResize(offsetWidth) {
     act(() => {
-      const element = this.find('CSSMotion').getDOMNode();
-      element.dispatchEvent(motionEvent);
-      this.update();
+      this.find('ResizeObserver').first().props().onResize({ offsetWidth });
     });
-
-    return this;
+  },
+  triggerItemResize(index, offsetWidth) {
+    act(() => {
+      this.find('Item')
+        .at(index)
+        .find('ResizeObserver')
+        .props()
+        .onResize({ offsetWidth });
+    });
+  },
+  initSize(width, itemWidth) {
+    this.triggerResize(width);
+    this.triggerItemResize(itemWidth);
+  },
+  findRest() {
+    return this.find('div.rc-overflow-item-rest');
   },
 });

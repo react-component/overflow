@@ -206,7 +206,7 @@ function Overflow<ItemType = any>(
   const displayRest = restReady && !!omittedItems.length;
 
   let suffixStyle: React.CSSProperties = {};
-  if (suffixFixedStart !== null) {
+  if (suffixFixedStart !== null && isResponsive) {
     suffixStyle = {
       position: 'absolute',
       left: suffixFixedStart,

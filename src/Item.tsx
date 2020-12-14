@@ -6,6 +6,7 @@ export interface ItemProps<ItemType> {
   prefixCls: string;
   item?: ItemType;
   className?: string;
+  style?: React.CSSProperties;
   renderItem?: (item: ItemType) => React.ReactNode;
   responsive?: boolean;
   itemKey?: React.Key;
@@ -24,6 +25,7 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
     registerSize,
     itemKey,
     className,
+    style,
     children,
     display,
     order,
@@ -52,9 +54,10 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
       style={{
         opacity: mergedHidden ? 0.2 : 1,
         height: mergedHidden ? 0 : undefined,
-        overflowY: responsive ? 'hidden' : undefined,
+        overflowY: mergedHidden ? 'hidden' : undefined,
         order: responsive ? order : undefined,
         pointerEvents: mergedHidden ? 'none' : undefined,
+        ...style,
       }}
     >
       {childNode}

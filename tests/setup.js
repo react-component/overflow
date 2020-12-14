@@ -3,7 +3,7 @@ const Adapter = require('enzyme-adapter-react-16');
 const { act } = require('react-dom/test-utils');
 require('regenerator-runtime/runtime');
 
-window.requestAnimationFrame = func => {
+window.requestAnimationFrame = (func) => {
   window.setTimeout(func, 16);
 };
 
@@ -12,10 +12,7 @@ Enzyme.configure({ adapter: new Adapter() });
 Object.assign(Enzyme.ReactWrapper.prototype, {
   triggerResize(clientWidth) {
     act(() => {
-      this.find('ResizeObserver')
-        .first()
-        .props()
-        .onResize({}, { clientWidth });
+      this.find('ResizeObserver').first().props().onResize({}, { clientWidth });
       jest.runAllTimers();
       this.update();
     });
@@ -39,10 +36,15 @@ Object.assign(Enzyme.ReactWrapper.prototype, {
   },
   findItems() {
     return this.find('Item').filterWhere(
-      item => item.props().className !== 'rc-overflow-item-rest',
+      (item) =>
+        item.props().className !== 'rc-overflow-item-rest' &&
+        item.props().className !== 'rc-overflow-item-suffix',
     );
   },
   findRest() {
     return this.find('Item.rc-overflow-item-rest');
+  },
+  findSuffix() {
+    return this.find('Item.rc-overflow-item-suffix');
   },
 });

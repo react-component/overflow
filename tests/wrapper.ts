@@ -8,6 +8,7 @@ export interface WrapperType extends ReactWrapper<any, any> {
   initSize: (width: number, itemWidth: number) => WrapperType;
   findItems: () => WrapperType;
   findRest: () => WrapperType;
+  findSuffix: () => WrapperType;
 }
 
 export function mount(...args: MountParam) {

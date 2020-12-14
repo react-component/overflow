@@ -254,7 +254,7 @@ function Overflow<ItemType = any>(
       {suffix && (
         <Item
           order={displayCount}
-          prefixCls={prefixCls}
+          prefixCls={itemPrefixCls}
           className={`${itemPrefixCls}-suffix`}
           responsive={isResponsive}
           registerSize={registerSuffixSize}

@@ -40,12 +40,7 @@ describe('Overflow.Responsive', () => {
     wrapper.initSize(100, 20); // [0][1][2][3][4][+2](5)(6)
     expect(wrapper.findItems()).toHaveLength(6);
     [true, true, true, true, false, false].forEach((display, i) => {
-      expect(
-        wrapper
-          .findItems()
-          .at(i)
-          .props().display,
-      ).toBe(display);
+      expect(wrapper.findItems().at(i).props().display).toBe(display);
     });
     expect(wrapper.findRest()).toHaveLength(1);
     expect(wrapper.findRest().text()).toEqual('+ 2 ...');
@@ -155,6 +150,43 @@ describe('Overflow.Responsive', () => {
 
     act(() => {
       jest.runAllTimers();
+    });
+  });
+
+  describe('suffix', () => {
+    it('ping the position', () => {
+      const wrapper = mount(
+        <Overflow<ItemType>
+          data={getData(10)}
+          itemKey="key"
+          renderItem={renderItem}
+          maxCount="responsive"
+          suffix="Bamboo"
+        />,
+      );
+
+      wrapper.initSize(100, 20);
+
+      expect(wrapper.findSuffix().props().style).toEqual(
+        expect.objectContaining({ position: 'absolute', top: 0, left: 80 }),
+      );
+    });
+
+    it('too long to pin', () => {
+      const wrapper = mount(
+        <Overflow<ItemType>
+          data={getData(1)}
+          itemKey="key"
+          renderItem={renderItem}
+          maxCount="responsive"
+          suffix="Bamboo"
+        />,
+      );
+
+      wrapper.initSize(100, 20);
+      wrapper.triggerItemResize(0, 90);
+
+      expect(wrapper.findSuffix().props().style.position).toBeFalsy();
     });
   });
 });

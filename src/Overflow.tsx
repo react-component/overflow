@@ -71,7 +71,8 @@ function Overflow<ItemType = any>(
   /**
    * When is `responsive`, we will always render rest node to get the real width of it for calculation
    */
-  const showRest = isResponsive || data.length > maxCount!;
+  const showRest =
+    isResponsive || (typeof maxCount === 'number' && data.length > maxCount);
 
   const mergedData = useMemo(() => {
     let items = data;

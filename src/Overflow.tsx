@@ -155,6 +155,13 @@ function Overflow<ItemType = any>(
       const len = mergedData.length;
       const lastIndex = len - 1;
 
+      // When data count change to 0, reset this since not loop will reach
+      if (!len) {
+        updateDisplayCount(0);
+        setSuffixFixedStart(null);
+        return;
+      }
+
       for (let i = 0; i < len; i += 1) {
         const currentItemWidth = getItemWidth(i);
 
@@ -179,7 +186,7 @@ function Overflow<ItemType = any>(
           // Can not hold all the content to show rest
           updateDisplayCount(i - 1);
           setSuffixFixedStart(
-            totalWidth - currentItemWidth - suffixWidth + mergedRestWidth,
+            totalWidth - currentItemWidth - suffixWidth + restWidth,
           );
           break;
         } else if (i === lastIndex) {
@@ -194,14 +201,7 @@ function Overflow<ItemType = any>(
         setSuffixFixedStart(null);
       }
     }
-  }, [
-    containerWidth,
-    itemWidths,
-    mergedRestWidth,
-    suffixWidth,
-    getKey,
-    mergedData,
-  ]);
+  }, [containerWidth, itemWidths, restWidth, suffixWidth, getKey, mergedData]);
 
   // ================================ Render ================================
   const displayRest = restReady && !!omittedItems.length;
@@ -238,7 +238,8 @@ function Overflow<ItemType = any>(
       {/* Rest Count Item */}
       {showRest ? (
         <Item
-          order={displayRest ? displayCount : mergedData.length}
+          // When not show, order should be the last
+          order={displayRest ? displayCount : Number.MAX_SAFE_INTEGER}
           prefixCls={itemPrefixCls}
           className={`${itemPrefixCls}-rest`}
           responsive={isResponsive}

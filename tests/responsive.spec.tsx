@@ -208,7 +208,7 @@ describe('Overflow.Responsive', () => {
       wrapper.initSize(20, 20);
       wrapper.setProps({ data: [] });
 
-      expect(wrapper.findRest().props().order).toEqual(Number.MAX_SAFE_INTEGER);
+      expect(wrapper.findRest()).toHaveLength(0);
       expect(wrapper.findSuffix().props().style.position).toBeFalsy();
     });
   });

@@ -66,7 +66,7 @@ function Overflow<ItemType = any>(
   const mergedRestWidth = Math.max(prevRestWidth, restWidth);
 
   // ================================= Data =================================
-  const isResponsive = maxCount === RESPONSIVE;
+  const isResponsive = data.length && maxCount === RESPONSIVE;
 
   /**
    * When is `responsive`, we will always render rest node to get the real width of it for calculation

@@ -40,7 +40,12 @@ describe('Overflow.Responsive', () => {
     wrapper.initSize(100, 20); // [0][1][2][3][4][+2](5)(6)
     expect(wrapper.findItems()).toHaveLength(6);
     [true, true, true, true, false, false].forEach((display, i) => {
-      expect(wrapper.findItems().at(i).props().display).toBe(display);
+      expect(
+        wrapper
+          .findItems()
+          .at(i)
+          .props().display,
+      ).toBe(display);
     });
     expect(wrapper.findRest()).toHaveLength(1);
     expect(wrapper.findRest().text()).toEqual('+ 2 ...');
@@ -186,6 +191,24 @@ describe('Overflow.Responsive', () => {
       wrapper.initSize(100, 20);
       wrapper.triggerItemResize(0, 90);
 
+      expect(wrapper.findSuffix().props().style.position).toBeFalsy();
+    });
+
+    it('long to short should keep correct position', () => {
+      const wrapper = mount(
+        <Overflow<ItemType>
+          data={getData(3)}
+          itemKey="key"
+          renderItem={renderItem}
+          maxCount="responsive"
+          suffix="Bamboo"
+        />,
+      );
+
+      wrapper.initSize(20, 20);
+      wrapper.setProps({ data: [] });
+
+      expect(wrapper.findRest().props().order).toEqual(Number.MAX_SAFE_INTEGER);
       expect(wrapper.findSuffix().props().style.position).toBeFalsy();
     });
   });

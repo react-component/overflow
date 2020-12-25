@@ -215,6 +215,11 @@ function Overflow<ItemType = any>(
     };
   }
 
+  const itemSharedProps = {
+    prefixCls: itemPrefixCls,
+    responsive: isResponsive,
+  };
+
   let overflowNode = (
     <div className={classNames(prefixCls, className)} style={style} ref={ref}>
       {mergedData.map((item, index) => {
@@ -222,14 +227,13 @@ function Overflow<ItemType = any>(
 
         return (
           <Item<ItemType>
+            {...itemSharedProps}
             order={index}
             key={key}
             item={item}
-            prefixCls={itemPrefixCls}
             renderItem={mergedRenderItem}
             itemKey={key}
             registerSize={registerSize}
-            responsive={isResponsive}
             display={index <= displayCount}
           />
         );
@@ -238,11 +242,10 @@ function Overflow<ItemType = any>(
       {/* Rest Count Item */}
       {showRest ? (
         <Item
+          {...itemSharedProps}
           // When not show, order should be the last
           order={displayRest ? displayCount : Number.MAX_SAFE_INTEGER}
-          prefixCls={itemPrefixCls}
           className={`${itemPrefixCls}-rest`}
-          responsive={isResponsive}
           registerSize={registerOverflowSize}
           display={displayRest}
         >
@@ -255,10 +258,9 @@ function Overflow<ItemType = any>(
       {/* Suffix Node */}
       {suffix && (
         <Item
+          {...itemSharedProps}
           order={displayCount}
-          prefixCls={itemPrefixCls}
           className={`${itemPrefixCls}-suffix`}
-          responsive={isResponsive}
           registerSize={registerSuffixSize}
           display
           style={suffixStyle}

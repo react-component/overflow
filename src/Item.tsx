@@ -32,6 +32,7 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
     display,
     order,
     component: Component,
+    ...restProps
   } = props;
 
   const mergedHidden = responsive && !display;
@@ -62,6 +63,7 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
         pointerEvents: mergedHidden ? 'none' : undefined,
         ...style,
       }}
+      {...restProps}
     >
       {childNode}
     </Component>

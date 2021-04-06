@@ -1,5 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Overflow aria props 1`] = `
+<div
+  class="rc-overflow"
+  role="menu"
+>
+  <div
+    class="rc-overflow-item"
+    role="menuitem"
+    style="opacity: 1;"
+  >
+    Label 0
+  </div>
+</div>
+`;
+
 exports[`Overflow customize component 1`] = `
 <ul
   class="rc-overflow"

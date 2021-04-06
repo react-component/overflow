@@ -13,7 +13,7 @@ export type ComponentType =
   | React.FC<any>
   | keyof React.ReactHTML;
 
-export interface OverflowProps<ItemType> {
+export interface OverflowProps<ItemType> extends React.HTMLAttributes<any> {
   prefixCls?: string;
   className?: string;
   style?: React.CSSProperties;
@@ -22,6 +22,7 @@ export interface OverflowProps<ItemType> {
   /** Used for `responsive`. It will limit render node to avoid perf issue */
   itemWidth?: number;
   renderItem?: (item: ItemType) => React.ReactNode;
+  renderItemProps?: (item: ItemType) => React.HTMLAttributes<any>;
   maxCount?: number | typeof RESPONSIVE;
   renderRest?:
     | React.ReactNode
@@ -49,9 +50,11 @@ function Overflow<ItemType = any>(
     className,
     maxCount,
     renderRest = defaultRenderRest,
+    renderItemProps,
     suffix,
     component: Component = 'div',
-    itemComponent = 'div'
+    itemComponent = 'div',
+    ...restProps
   } = props;
 
   const createUseState = useBatchFrameState();
@@ -236,6 +239,7 @@ function Overflow<ItemType = any>(
       className={classNames(prefixCls, className)}
       style={style}
       ref={ref}
+      {...restProps}
     >
       {mergedData.map((item, index) => {
         const key = getKey(item, index);
@@ -250,6 +254,7 @@ function Overflow<ItemType = any>(
             itemKey={key}
             registerSize={registerSize}
             display={index <= displayCount}
+            {...renderItemProps?.(item)}
           />
         );
       })}

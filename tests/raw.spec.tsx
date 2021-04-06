@@ -38,4 +38,33 @@ describe('Overflow.Raw', () => {
 
     expect(wrapper.exists(Item)).toBeFalsy();
   });
+
+  it('HOC usage', () => {
+    interface SharedProps {
+      visible?: boolean;
+      children?: React.ReactNode;
+    }
+
+    const ComponentWrapper = (props: SharedProps) => (
+      <Overflow.Item {...props} />
+    );
+
+    const UserHOC = ({ visible, ...props }: SharedProps) =>
+      visible ? <ComponentWrapper {...props} /> : null;
+
+    const wrapper = mount(
+      <Overflow
+        data={[
+          <UserHOC key="light">Light</UserHOC>,
+          <UserHOC key="bamboo" visible>
+            Bamboo
+          </UserHOC>,
+        ]}
+        renderRawItem={node => node}
+        itemKey={node => node.key}
+      />,
+    );
+
+    expect(wrapper.render()).toMatchSnapshot();
+  });
 });

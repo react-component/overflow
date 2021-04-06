@@ -31,7 +31,7 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
     children,
     display,
     order,
-    component: Component,
+    component: Component = 'div',
     ...restProps
   } = props;
 

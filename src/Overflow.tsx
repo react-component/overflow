@@ -13,7 +13,7 @@ export type ComponentType =
   | React.FC<any>
   | keyof React.ReactHTML;
 
-export interface OverflowProps<ItemType> {
+export interface OverflowProps<ItemType> extends React.HTMLAttributes<any> {
   prefixCls?: string;
   className?: string;
   style?: React.CSSProperties;
@@ -51,7 +51,8 @@ function Overflow<ItemType = any>(
     renderRest = defaultRenderRest,
     suffix,
     component: Component = 'div',
-    itemComponent = 'div'
+    itemComponent = 'div',
+    ...restProps
   } = props;
 
   const createUseState = useBatchFrameState();
@@ -236,6 +237,7 @@ function Overflow<ItemType = any>(
       className={classNames(prefixCls, className)}
       style={style}
       ref={ref}
+      {...restProps}
     >
       {mergedData.map((item, index) => {
         const key = getKey(item, index);

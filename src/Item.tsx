@@ -1,6 +1,7 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
+import { ComponentType } from './Overflow';
 
 export interface ItemProps<ItemType> {
   prefixCls: string;
@@ -14,6 +15,7 @@ export interface ItemProps<ItemType> {
   children?: React.ReactNode;
   display: boolean;
   order: number;
+  component?: ComponentType;
 }
 
 export default function Item<ItemType>(props: ItemProps<ItemType>) {
@@ -29,6 +31,7 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
     children,
     display,
     order,
+    component: Component,
   } = props;
 
   const mergedHidden = responsive && !display;
@@ -49,7 +52,7 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
   const childNode = item !== undefined ? renderItem!(item) : children;
 
   let itemNode = (
-    <div
+    <Component
       className={classNames(prefixCls, className)}
       style={{
         opacity: mergedHidden ? 0.2 : 1,
@@ -61,7 +64,7 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
       }}
     >
       {childNode}
-    </div>
+    </Component>
   );
 
   if (responsive) {

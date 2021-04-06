@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Overflow customize component 1`] = `
+<ul
+  class="rc-overflow"
+>
+  <li
+    class="rc-overflow-item"
+    style="opacity: 1;"
+  >
+    Label 0
+  </li>
+</ul>
+`;

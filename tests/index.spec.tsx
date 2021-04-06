@@ -57,7 +57,7 @@ describe('Overflow', () => {
         <Overflow
           data={getData(6)}
           renderItem={renderItem}
-          renderRest={omittedItems => `Bamboo: ${omittedItems.length}`}
+          renderRest={(omittedItems) => `Bamboo: ${omittedItems.length}`}
           maxCount={3}
         />,
       );
@@ -92,11 +92,25 @@ describe('Overflow', () => {
         <Overflow
           data={getData(1)}
           renderItem={renderItem}
-          itemKey={item => `bamboo-${item.key}`}
+          itemKey={(item) => `bamboo-${item.key}`}
         />,
       );
 
       expect(wrapper.find('Item').key()).toEqual('bamboo-k-0');
     });
+  });
+
+  it('customize component', () => {
+    const wrapper = mount(
+      <Overflow
+        data={getData(1)}
+        renderItem={renderItem}
+        itemKey={(item) => `bamboo-${item.key}`}
+        component="ul"
+        itemComponent="li"
+      />,
+    );
+
+    expect(wrapper.render()).toMatchSnapshot();
   });
 });

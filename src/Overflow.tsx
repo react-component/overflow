@@ -7,6 +7,12 @@ import { useBatchFrameState } from './hooks/useBatchFrameState';
 
 const RESPONSIVE = 'responsive' as const;
 
+export type ComponentType =
+  | React.ComponentType<any>
+  | React.ForwardRefExoticComponent<any>
+  | React.FC<any>
+  | keyof React.ReactHTML;
+
 export interface OverflowProps<ItemType> {
   prefixCls?: string;
   className?: string;
@@ -21,6 +27,8 @@ export interface OverflowProps<ItemType> {
     | React.ReactNode
     | ((omittedItems: ItemType[]) => React.ReactNode);
   suffix?: React.ReactNode;
+  component?: ComponentType;
+  itemComponent?: ComponentType;
 }
 
 function defaultRenderRest<ItemType>(omittedItems: ItemType[]) {
@@ -42,6 +50,8 @@ function Overflow<ItemType = any>(
     maxCount,
     renderRest = defaultRenderRest,
     suffix,
+    component: Component = 'div',
+    itemComponent = 'div'
   } = props;
 
   const createUseState = useBatchFrameState();
@@ -218,10 +228,15 @@ function Overflow<ItemType = any>(
   const itemSharedProps = {
     prefixCls: itemPrefixCls,
     responsive: isResponsive,
+    component: itemComponent,
   };
 
   let overflowNode = (
-    <div className={classNames(prefixCls, className)} style={style} ref={ref}>
+    <Component
+      className={classNames(prefixCls, className)}
+      style={style}
+      ref={ref}
+    >
       {mergedData.map((item, index) => {
         const key = getKey(item, index);
 
@@ -268,7 +283,7 @@ function Overflow<ItemType = any>(
           {suffix}
         </Item>
       )}
-    </div>
+    </Component>
   );
 
   if (isResponsive) {

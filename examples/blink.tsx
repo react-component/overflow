@@ -1,5 +1,5 @@
 import React from 'react';
-import Overflow from '../src';
+import Overflow from 'rc-overflow';
 import '../assets/index.less';
 import './common.less';
 

@@ -12,3 +12,9 @@ exports[`Overflow.Raw render node directly 1`] = `
   </li>
 </ul>
 `;
+
+exports[`Overflow.Raw safe with item directly 1`] = `
+<div>
+  Bamboo
+</div>
+`;

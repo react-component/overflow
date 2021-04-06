@@ -1,5 +1,6 @@
 import React from 'react';
 import Overflow from '../src';
+import Item from '../src/Item';
 import { mount } from './wrapper';
 
 interface ItemType {
@@ -28,5 +29,13 @@ describe('Overflow.Raw', () => {
     );
 
     expect(wrapper.render()).toMatchSnapshot();
+  });
+
+  it('safe with item directly', () => {
+    const wrapper = mount(<Overflow.Item>Bamboo</Overflow.Item>);
+
+    expect(wrapper.render()).toMatchSnapshot();
+
+    expect(wrapper.exists(Item)).toBeFalsy();
   });
 });

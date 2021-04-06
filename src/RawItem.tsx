@@ -12,7 +12,7 @@ export default function RawItem(props: RawItemProps) {
 
   // Render directly when context not provided
   if (!context) {
-    const { component: Component, ...restProps } = props;
+    const { component: Component = 'div', ...restProps } = props;
     return <Component {...restProps} />;
   }
 

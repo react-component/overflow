@@ -1,6 +1,6 @@
 {
   "name": "rc-overflow",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Auto collapse box when overflow",
   "keywords": [
     "react",

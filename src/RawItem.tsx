@@ -10,5 +10,11 @@ export interface RawItemProps extends React.HTMLAttributes<any> {
 export default function RawItem(props: RawItemProps) {
   const context = React.useContext(OverflowContext);
 
+  // Render directly when context not provided
+  if (!context) {
+    const { component: Component, ...restProps } = props;
+    return <Component {...restProps} />;
+  }
+
   return <Item {...context} {...props} />;
 }

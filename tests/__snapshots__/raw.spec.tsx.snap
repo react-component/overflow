@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Overflow.Basic customize component 1`] = `
+exports[`Overflow.Raw render node directly 1`] = `
 <ul
   class="rc-overflow"
 >

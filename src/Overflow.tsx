@@ -22,6 +22,7 @@ export interface OverflowProps<ItemType> extends React.HTMLAttributes<any> {
   /** Used for `responsive`. It will limit render node to avoid perf issue */
   itemWidth?: number;
   renderItem?: (item: ItemType) => React.ReactNode;
+  renderItemProps?: (item: ItemType) => React.HTMLAttributes<any>;
   maxCount?: number | typeof RESPONSIVE;
   renderRest?:
     | React.ReactNode
@@ -49,6 +50,7 @@ function Overflow<ItemType = any>(
     className,
     maxCount,
     renderRest = defaultRenderRest,
+    renderItemProps,
     suffix,
     component: Component = 'div',
     itemComponent = 'div',
@@ -252,6 +254,7 @@ function Overflow<ItemType = any>(
             itemKey={key}
             registerSize={registerSize}
             display={index <= displayCount}
+            {...renderItemProps?.(item)}
           />
         );
       })}

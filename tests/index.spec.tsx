@@ -113,4 +113,18 @@ describe('Overflow', () => {
 
     expect(wrapper.render()).toMatchSnapshot();
   });
+
+  it('aria props', () => {
+    const wrapper = mount(
+      <Overflow
+        data={getData(1)}
+        renderItem={renderItem}
+        renderItemProps={() => ({ role: 'menuitem' })}
+        itemKey={(item) => `bamboo-${item.key}`}
+        role="menu"
+      />,
+    );
+
+    expect(wrapper.render()).toMatchSnapshot();
+  });
 });

@@ -4,6 +4,19 @@ import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
 import Item from './Item';
 import { useBatchFrameState } from './hooks/useBatchFrameState';
+import RawItem from './RawItem';
+
+export const OverflowContext = React.createContext<{
+  prefixCls: string;
+  responsive: boolean;
+  order: number;
+  item: any;
+  itemKey: React.Key;
+  registerSize: (key: React.Key, width: number | null) => void;
+  display: boolean;
+
+  //           renderItem={mergedRenderItem}
+}>(null);
 
 const RESPONSIVE = 'responsive' as const;
 
@@ -22,7 +35,8 @@ export interface OverflowProps<ItemType> extends React.HTMLAttributes<any> {
   /** Used for `responsive`. It will limit render node to avoid perf issue */
   itemWidth?: number;
   renderItem?: (item: ItemType) => React.ReactNode;
-  renderItemProps?: (item: ItemType) => React.HTMLAttributes<any>;
+  /** @private Do not use in your production. Render raw node that need wrap Item by developer self */
+  renderRawItem?: (item: ItemType, index: number) => React.ReactElement;
   maxCount?: number | typeof RESPONSIVE;
   renderRest?:
     | React.ReactNode
@@ -44,16 +58,16 @@ function Overflow<ItemType = any>(
     prefixCls = 'rc-overflow',
     data = [],
     renderItem,
+    renderRawItem,
     itemKey,
     itemWidth = 10,
     style,
     className,
     maxCount,
     renderRest = defaultRenderRest,
-    renderItemProps,
     suffix,
     component: Component = 'div',
-    itemComponent = 'div',
+    itemComponent,
     ...restProps
   } = props;
 
@@ -234,14 +248,28 @@ function Overflow<ItemType = any>(
     component: itemComponent,
   };
 
-  let overflowNode = (
-    <Component
-      className={classNames(prefixCls, className)}
-      style={style}
-      ref={ref}
-      {...restProps}
-    >
-      {mergedData.map((item, index) => {
+  // Choice render fun by `renderRawItem`
+  const internalRenderItemNode = renderRawItem
+    ? (item: ItemType, index: number) => {
+        const key = getKey(item, index);
+
+        return (
+          <OverflowContext.Provider
+            key={key}
+            value={{
+              ...itemSharedProps,
+              order: index,
+              item,
+              itemKey: key,
+              registerSize,
+              display: index <= displayCount,
+            }}
+          >
+            {renderRawItem(item, index)}
+          </OverflowContext.Provider>
+        );
+      }
+    : (item: ItemType, index: number) => {
         const key = getKey(item, index);
 
         return (
@@ -254,10 +282,18 @@ function Overflow<ItemType = any>(
             itemKey={key}
             registerSize={registerSize}
             display={index <= displayCount}
-            {...renderItemProps?.(item)}
           />
         );
-      })}
+      };
+
+  let overflowNode = (
+    <Component
+      className={classNames(prefixCls, className)}
+      style={style}
+      ref={ref}
+      {...restProps}
+    >
+      {mergedData.map(internalRenderItemNode)}
 
       {/* Rest Count Item */}
       {showRest ? (
@@ -304,11 +340,18 @@ function Overflow<ItemType = any>(
 
 const ForwardOverflow = React.forwardRef(Overflow);
 
-ForwardOverflow.displayName = 'Overflow';
-
-// Convert to generic type
-export default ForwardOverflow as <ItemType = any>(
+type ForwardOverflowType = <ItemType = any>(
   props: React.PropsWithChildren<OverflowProps<ItemType>> & {
     ref?: React.Ref<HTMLDivElement>;
   },
 ) => React.ReactElement;
+
+type FilledOverflowType = ForwardOverflowType & {
+  Item: typeof RawItem;
+};
+
+ForwardOverflow.displayName = 'Overflow';
+((ForwardOverflow as unknown) as FilledOverflowType).Item = RawItem;
+
+// Convert to generic type
+export default (ForwardOverflow as unknown) as FilledOverflowType;

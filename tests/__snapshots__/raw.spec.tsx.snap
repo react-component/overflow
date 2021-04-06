@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Overflow.Raw HOC usage 1`] = `
+<div
+  class="rc-overflow"
+>
+  <div
+    class="rc-overflow-item"
+    style="opacity: 1;"
+  >
+    Bamboo
+  </div>
+</div>
+`;
+
+exports[`Overflow.Raw render node directly 1`] = `
+<ul
+  class="rc-overflow"
+>
+  <li
+    class="rc-overflow-item"
+    style="opacity: 1;"
+  >
+    Label 0
+  </li>
+</ul>
+`;
+
+exports[`Overflow.Raw safe with item directly 1`] = `
+<div>
+  Bamboo
+</div>
+`;

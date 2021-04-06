@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
 import { ComponentType } from './Overflow';
 
-export interface ItemProps<ItemType> {
+export interface ItemProps<ItemType> extends React.HTMLAttributes<any> {
   prefixCls: string;
   item?: ItemType;
   className?: string;
@@ -31,7 +31,7 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
     children,
     display,
     order,
-    component: Component,
+    component: Component = 'div',
     ...restProps
   } = props;
 
@@ -50,7 +50,8 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
   );
 
   // ================================ Render ================================
-  const childNode = item !== undefined ? renderItem!(item) : children;
+  const childNode =
+    renderItem && item !== undefined ? renderItem(item) : children;
 
   let itemNode = (
     <Component

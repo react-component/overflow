@@ -17,17 +17,19 @@ function createData(count: number): ItemType[] {
   return data;
 }
 
-function renderItem(item: ItemType) {
+function renderRawItem(item: ItemType) {
   return (
-    <div
-      style={{
-        margin: '0 16px 0 8px',
-        padding: '4px 8px',
-        background: 'rgba(255, 0, 0, 0.2)',
-      }}
-    >
-      {item.label}
-    </div>
+    <Overflow.Item component="span">
+      <div
+        style={{
+          margin: '0 16px 0 8px',
+          padding: '4px 8px',
+          background: 'rgba(255, 0, 0, 0.2)',
+        }}
+      >
+        {item.label}
+      </div>
+    </Overflow.Item>
   );
 }
 
@@ -45,31 +47,9 @@ function renderRest(items: ItemType[]) {
   );
 }
 
-const inputStyle: React.CSSProperties = {
-  border: 'none',
-  fontSize: 12,
-  margin: 0,
-  outline: 'none',
-  lineHeight: '20px',
-  fontFamily: '-apple-system',
-  padding: '0 4px',
-};
-
 const Demo = () => {
   const [responsive, setResponsive] = React.useState(true);
-  const [inputValue, setInputValue] = React.useState('');
-  const [inputWidth, setInputWidth] = React.useState(0);
-  const [data, setData] = React.useState(createData(3));
-  const inputRef = React.useRef<HTMLInputElement>();
-  const measureRef = React.useRef<HTMLDivElement>();
-
-  React.useLayoutEffect(() => {
-    setInputWidth(measureRef.current.offsetWidth);
-  }, [inputValue]);
-
-  React.useEffect(() => {
-    inputRef.current.focus();
-  }, []);
+  const [data, setData] = React.useState(createData(1));
 
   return (
     <div style={{ padding: 32 }}>
@@ -108,39 +88,9 @@ const Demo = () => {
       >
         <Overflow<ItemType>
           data={data}
-          renderItem={renderItem}
+          renderRawItem={renderRawItem}
           renderRest={renderRest}
           maxCount={responsive ? 'responsive' : 6}
-          suffix={
-            <div style={{ position: 'relative', maxWidth: '100%' }}>
-              <input
-                style={{
-                  ...inputStyle,
-                  background: 'rgba(0, 0, 0, 0.1)',
-                  width: inputWidth,
-                  minWidth: 10,
-                  maxWidth: '100%',
-                }}
-                value={inputValue}
-                onChange={e => {
-                  setInputValue(e.target.value);
-                }}
-                ref={inputRef}
-              />
-              <div
-                style={{
-                  ...inputStyle,
-                  pointerEvents: 'none',
-                  position: 'absolute',
-                  left: 0,
-                  top: `200%`,
-                }}
-                ref={measureRef}
-              >
-                {inputValue}
-              </div>
-            </div>
-          }
         />
       </div>
     </div>

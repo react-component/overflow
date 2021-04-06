@@ -248,9 +248,9 @@ function Overflow<ItemType = any>(
     component: itemComponent,
   };
 
-  const internalRenderItemNode = useMemo(() => {
-    if (renderRawItem) {
-      return (item: ItemType, index: number) => {
+  // Choice render fun by `renderRawItem`
+  const internalRenderItemNode = renderRawItem
+    ? (item: ItemType, index: number) => {
         const key = getKey(item, index);
 
         return (
@@ -268,26 +268,23 @@ function Overflow<ItemType = any>(
             {renderRawItem(item, index)}
           </OverflowContext.Provider>
         );
+      }
+    : (item: ItemType, index: number) => {
+        const key = getKey(item, index);
+
+        return (
+          <Item<ItemType>
+            {...itemSharedProps}
+            order={index}
+            key={key}
+            item={item}
+            renderItem={mergedRenderItem}
+            itemKey={key}
+            registerSize={registerSize}
+            display={index <= displayCount}
+          />
+        );
       };
-    }
-
-    return (item: ItemType, index: number) => {
-      const key = getKey(item, index);
-
-      return (
-        <Item<ItemType>
-          {...itemSharedProps}
-          order={index}
-          key={key}
-          item={item}
-          renderItem={mergedRenderItem}
-          itemKey={key}
-          registerSize={registerSize}
-          display={index <= displayCount}
-        />
-      );
-    };
-  }, [renderRawItem, renderItem]);
 
   let overflowNode = (
     <Component

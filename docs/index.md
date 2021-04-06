@@ -2,4 +2,4 @@
 title: rc-overflow
 ---
 
-<embed src="../README.md"></embed>
+<embed src="../README.md" />

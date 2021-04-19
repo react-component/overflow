@@ -19,6 +19,7 @@ export const OverflowContext = React.createContext<{
 
   // Rest Usage
   className?: string;
+  rest?: boolean;
 }>(null);
 
 const RESPONSIVE = 'responsive' as const;
@@ -321,6 +322,7 @@ function Overflow<ItemType = any>(
         value={{
           ...itemSharedProps,
           ...restContextProps,
+          rest: true,
         }}
       >
         {renderRawRest(omittedItems)}

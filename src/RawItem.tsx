@@ -20,11 +20,14 @@ export default function RawItem(props: RawItemProps) {
   const { className: contextClassName, ...restContext } = context;
   const { className, ...restProps } = props;
 
+  // Do not pass context to sub item to avoid multiple measure
   return (
-    <Item
-      className={classNames(contextClassName, className)}
-      {...restContext}
-      {...restProps}
-    />
+    <OverflowContext.Provider value={null}>
+      <Item
+        className={classNames(contextClassName, className)}
+        {...restContext}
+        {...restProps}
+      />
+    </OverflowContext.Provider>
   );
 }

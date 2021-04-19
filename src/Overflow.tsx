@@ -10,12 +10,15 @@ export const OverflowContext = React.createContext<{
   prefixCls: string;
   responsive: boolean;
   order: number;
-  item: any;
-  itemKey: React.Key;
   registerSize: (key: React.Key, width: number | null) => void;
   display: boolean;
 
-  //           renderItem={mergedRenderItem}
+  // Item Usage
+  item?: any;
+  itemKey?: React.Key;
+
+  // Rest Usage
+  className?: string;
 }>(null);
 
 const RESPONSIVE = 'responsive' as const;
@@ -41,6 +44,8 @@ export interface OverflowProps<ItemType> extends React.HTMLAttributes<any> {
   renderRest?:
     | React.ReactNode
     | ((omittedItems: ItemType[]) => React.ReactNode);
+  /** @private Do not use in your production. Render raw node that need wrap Item by developer self */
+  renderRawRest?: (omittedItems: ItemType[]) => React.ReactElement;
   suffix?: React.ReactNode;
   component?: ComponentType;
   itemComponent?: ComponentType;
@@ -64,7 +69,8 @@ function Overflow<ItemType = any>(
     style,
     className,
     maxCount,
-    renderRest = defaultRenderRest,
+    renderRest,
+    renderRawRest,
     suffix,
     component: Component = 'div',
     itemComponent,
@@ -149,7 +155,7 @@ function Overflow<ItemType = any>(
   }
 
   function registerSize(key: React.Key, width: number | null) {
-    setItemWidths((origin) => {
+    setItemWidths(origin => {
       const clone = new Map(origin);
 
       if (width === null) {
@@ -248,7 +254,7 @@ function Overflow<ItemType = any>(
     component: itemComponent,
   };
 
-  // Choice render fun by `renderRawItem`
+  // >>>>> Choice render fun by `renderRawItem`
   const internalRenderItemNode = renderRawItem
     ? (item: ItemType, index: number) => {
         const key = getKey(item, index);
@@ -286,6 +292,42 @@ function Overflow<ItemType = any>(
         );
       };
 
+  // >>>>> Rest node
+  let restNode: React.ReactNode;
+  const restContextProps = {
+    order: displayRest ? displayCount : Number.MAX_SAFE_INTEGER,
+    className: `${itemPrefixCls}-rest`,
+    registerSize: registerOverflowSize,
+    display: displayRest,
+  };
+
+  if (!renderRawRest) {
+    const mergedRenderRest = renderRest || defaultRenderRest;
+
+    restNode = (
+      <Item
+        {...itemSharedProps}
+        // When not show, order should be the last
+        {...restContextProps}
+      >
+        {typeof mergedRenderRest === 'function'
+          ? mergedRenderRest(omittedItems)
+          : mergedRenderRest}
+      </Item>
+    );
+  } else if (renderRawRest) {
+    restNode = (
+      <OverflowContext.Provider
+        value={{
+          ...itemSharedProps,
+          ...restContextProps,
+        }}
+      >
+        {renderRawRest(omittedItems)}
+      </OverflowContext.Provider>
+    );
+  }
+
   let overflowNode = (
     <Component
       className={classNames(prefixCls, className)}
@@ -296,20 +338,7 @@ function Overflow<ItemType = any>(
       {mergedData.map(internalRenderItemNode)}
 
       {/* Rest Count Item */}
-      {showRest ? (
-        <Item
-          {...itemSharedProps}
-          // When not show, order should be the last
-          order={displayRest ? displayCount : Number.MAX_SAFE_INTEGER}
-          className={`${itemPrefixCls}-rest`}
-          registerSize={registerOverflowSize}
-          display={displayRest}
-        >
-          {typeof renderRest === 'function'
-            ? renderRest(omittedItems)
-            : renderRest}
-        </Item>
-      ) : null}
+      {showRest ? restNode : null}
 
       {/* Suffix Node */}
       {suffix && (

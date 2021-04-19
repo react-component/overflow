@@ -1,4 +1,5 @@
 import * as React from 'react';
+import classNames from 'classnames';
 import Item from './Item';
 import { ComponentType, OverflowContext } from './Overflow';
 
@@ -16,5 +17,14 @@ export default function RawItem(props: RawItemProps) {
     return <Component {...restProps} />;
   }
 
-  return <Item {...context} {...props} />;
+  const { className: contextClassName, ...restContext } = context;
+  const { className, ...restProps } = props;
+
+  return (
+    <Item
+      className={classNames(contextClassName, className)}
+      {...restContext}
+      {...restProps}
+    />
+  );
 }

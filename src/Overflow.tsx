@@ -50,6 +50,9 @@ export interface OverflowProps<ItemType> extends React.HTMLAttributes<any> {
   suffix?: React.ReactNode;
   component?: ComponentType;
   itemComponent?: ComponentType;
+
+  /** @private This API may be refactor since not well design */
+  onVisibleChange?: (visibleCount: number) => void;
 }
 
 function defaultRenderRest<ItemType>(omittedItems: ItemType[]) {
@@ -75,6 +78,7 @@ function Overflow<ItemType = any>(
     suffix,
     component: Component = 'div',
     itemComponent,
+    onVisibleChange,
     ...restProps
   } = props;
 
@@ -147,6 +151,8 @@ function Overflow<ItemType = any>(
     setDisplayCount(count);
     if (!notReady) {
       setRestReady(count < data.length - 1);
+
+      onVisibleChange?.(count);
     }
   }
 

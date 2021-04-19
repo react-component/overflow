@@ -57,7 +57,7 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
     <Component
       className={classNames(prefixCls, className)}
       style={{
-        opacity: mergedHidden ? 0.2 : 1,
+        opacity: mergedHidden ? 0 : 1,
         height: mergedHidden ? 0 : undefined,
         overflowY: mergedHidden ? 'hidden' : undefined,
         order: responsive ? order : undefined,

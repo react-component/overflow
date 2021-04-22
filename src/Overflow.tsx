@@ -13,6 +13,8 @@ export const OverflowContext = React.createContext<{
   registerSize: (key: React.Key, width: number | null) => void;
   display: boolean;
 
+  invalidate: boolean;
+
   // Item Usage
   item?: any;
   itemKey?: React.Key;
@@ -22,6 +24,7 @@ export const OverflowContext = React.createContext<{
 }>(null);
 
 const RESPONSIVE = 'responsive' as const;
+const INVALIDATE = 'invalidate' as const;
 
 export type ComponentType =
   | React.ComponentType<any>
@@ -40,7 +43,7 @@ export interface OverflowProps<ItemType> extends React.HTMLAttributes<any> {
   renderItem?: (item: ItemType) => React.ReactNode;
   /** @private Do not use in your production. Render raw node that need wrap Item by developer self */
   renderRawItem?: (item: ItemType, index: number) => React.ReactElement;
-  maxCount?: number | typeof RESPONSIVE;
+  maxCount?: number | typeof RESPONSIVE | typeof INVALIDATE;
   renderRest?:
     | React.ReactNode
     | ((omittedItems: ItemType[]) => React.ReactNode);
@@ -104,6 +107,7 @@ function Overflow<ItemType = any>(
 
   // ================================= Data =================================
   const isResponsive = data.length && maxCount === RESPONSIVE;
+  const invalidate = maxCount === INVALIDATE;
 
   /**
    * When is `responsive`, we will always render rest node to get the real width of it for calculation
@@ -258,6 +262,7 @@ function Overflow<ItemType = any>(
     prefixCls: itemPrefixCls,
     responsive: isResponsive,
     component: itemComponent,
+    invalidate,
   };
 
   // >>>>> Choice render fun by `renderRawItem`
@@ -336,7 +341,7 @@ function Overflow<ItemType = any>(
 
   let overflowNode = (
     <Component
-      className={classNames(prefixCls, className)}
+      className={classNames(!invalidate && prefixCls, className)}
       style={style}
       ref={ref}
       {...restProps}
@@ -383,10 +388,16 @@ type ForwardOverflowType = <ItemType = any>(
 
 type FilledOverflowType = ForwardOverflowType & {
   Item: typeof RawItem;
+  RESPONSIVE: typeof RESPONSIVE;
+  /** Will work as normal `component`. Skip patch props like `prefixCls`. */
+  INVALIDATE: typeof INVALIDATE;
 };
 
 ForwardOverflow.displayName = 'Overflow';
+
 ((ForwardOverflow as unknown) as FilledOverflowType).Item = RawItem;
+((ForwardOverflow as unknown) as FilledOverflowType).RESPONSIVE = RESPONSIVE;
+((ForwardOverflow as unknown) as FilledOverflowType).INVALIDATE = INVALIDATE;
 
 // Convert to generic type
 export default (ForwardOverflow as unknown) as FilledOverflowType;

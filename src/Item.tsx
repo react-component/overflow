@@ -16,11 +16,13 @@ export interface ItemProps<ItemType> extends React.HTMLAttributes<any> {
   display: boolean;
   order: number;
   component?: ComponentType;
+  invalidate?: boolean;
 }
 
 export default function Item<ItemType>(props: ItemProps<ItemType>) {
   const {
     prefixCls,
+    invalidate,
     item,
     renderItem,
     responsive,
@@ -55,7 +57,7 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
 
   let itemNode = (
     <Component
-      className={classNames(prefixCls, className)}
+      className={classNames(!invalidate && prefixCls, className)}
       style={{
         opacity: mergedHidden ? 0 : 1,
         height: mergedHidden ? 0 : undefined,

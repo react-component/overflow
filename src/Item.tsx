@@ -55,15 +55,22 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
   const childNode =
     renderItem && item !== undefined ? renderItem(item) : children;
 
+  let overflowStyle: React.CSSProperties | undefined;
+  if (!invalidate) {
+    overflowStyle = {
+      opacity: mergedHidden ? 0 : 1,
+      height: mergedHidden ? 0 : undefined,
+      overflowY: mergedHidden ? 'hidden' : undefined,
+      order: responsive ? order : undefined,
+      pointerEvents: mergedHidden ? 'none' : undefined,
+    };
+  }
+
   let itemNode = (
     <Component
       className={classNames(!invalidate && prefixCls, className)}
       style={{
-        opacity: mergedHidden ? 0 : 1,
-        height: mergedHidden ? 0 : undefined,
-        overflowY: mergedHidden ? 'hidden' : undefined,
-        order: responsive ? order : undefined,
-        pointerEvents: mergedHidden ? 'none' : undefined,
+        ...overflowStyle,
         ...style,
       }}
       {...restProps}

@@ -6,13 +6,11 @@ exports[`Overflow.Invalidate render item 1`] = `
 >
   <li
     class=""
-    style="opacity: 1;"
   >
     Label 0
   </li>
   <li
     class=""
-    style="opacity: 1;"
   >
     Label 1
   </li>
@@ -25,13 +23,11 @@ exports[`Overflow.Invalidate render raw 1`] = `
 >
   <li
     class=""
-    style="opacity: 1;"
   >
     Label 0
   </li>
   <li
     class=""
-    style="opacity: 1;"
   >
     Label 1
   </li>

@@ -19,7 +19,10 @@ export interface ItemProps<ItemType> extends React.HTMLAttributes<any> {
   invalidate?: boolean;
 }
 
-export default function Item<ItemType>(props: ItemProps<ItemType>) {
+function InternalItem<ItemType>(
+  props: ItemProps<ItemType>,
+  ref: React.Ref<any>,
+) {
   const {
     prefixCls,
     invalidate,
@@ -74,6 +77,7 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
         ...style,
       }}
       {...restProps}
+      ref={ref}
     >
       {childNode}
     </Component>
@@ -93,3 +97,8 @@ export default function Item<ItemType>(props: ItemProps<ItemType>) {
 
   return itemNode;
 }
+
+const Item = React.forwardRef(InternalItem);
+Item.displayName = 'Item';
+
+export default Item;

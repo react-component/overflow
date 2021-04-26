@@ -17,16 +17,31 @@ describe('Overflow.Raw', () => {
   }
 
   it('render node directly', () => {
+    const elements = new Set<HTMLElement>();
+
     const wrapper = mount(
       <Overflow<ItemType>
         data={getData(1)}
         renderRawItem={item => {
-          return <Overflow.Item component="li">{item.label}</Overflow.Item>;
+          return (
+            <Overflow.Item
+              component="li"
+              ref={ele => {
+                elements.add(ele);
+              }}
+            >
+              {item.label}
+            </Overflow.Item>
+          );
         }}
         itemKey={item => `bamboo-${item.key}`}
         component="ul"
       />,
     );
+
+    const elementList = [...elements];
+    expect(elementList).toHaveLength(1);
+    expect(elementList[0] instanceof HTMLLIElement).toBeTruthy();
 
     expect(wrapper.render()).toMatchSnapshot();
   });

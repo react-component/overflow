@@ -8,7 +8,7 @@ export interface RawItemProps extends React.HTMLAttributes<any> {
   children?: React.ReactNode;
 }
 
-export default function RawItem(props: RawItemProps) {
+const InternalRawItem = (props: RawItemProps, ref: React.Ref<any>) => {
   const context = React.useContext(OverflowContext);
 
   // Render directly when context not provided
@@ -24,10 +24,16 @@ export default function RawItem(props: RawItemProps) {
   return (
     <OverflowContext.Provider value={null}>
       <Item
+        ref={ref}
         className={classNames(contextClassName, className)}
         {...restContext}
         {...restProps}
       />
     </OverflowContext.Provider>
   );
-}
+};
+
+const RawItem = React.forwardRef(InternalRawItem);
+RawItem.displayName = 'RawItem';
+
+export default RawItem;

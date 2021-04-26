@@ -290,7 +290,7 @@ function Overflow<ItemType = any>(
         const key = getKey(item, index);
 
         return (
-          <Item<ItemType>
+          <Item
             {...itemSharedProps}
             order={index}
             key={key}

@@ -14,7 +14,7 @@ const InternalRawItem = (props: RawItemProps, ref: React.Ref<any>) => {
   // Render directly when context not provided
   if (!context) {
     const { component: Component = 'div', ...restProps } = props;
-    return <Component {...restProps} />;
+    return <Component {...restProps} ref={ref} />;
   }
 
   const { className: contextClassName, ...restContext } = context;

@@ -69,6 +69,11 @@ function InternalItem<ItemType>(
     };
   }
 
+  const overflowProps: React.HTMLAttributes<any> = {};
+  if (mergedHidden) {
+    overflowProps['aria-hidden'] = true;
+  }
+
   let itemNode = (
     <Component
       className={classNames(!invalidate && prefixCls, className)}
@@ -76,6 +81,7 @@ function InternalItem<ItemType>(
         ...overflowStyle,
         ...style,
       }}
+      {...overflowProps}
       {...restProps}
       ref={ref}
     >

@@ -49,6 +49,13 @@ describe('Overflow.Responsive', () => {
     });
     expect(wrapper.findRest()).toHaveLength(1);
     expect(wrapper.findRest().text()).toEqual('+ 2 ...');
+    expect(
+      wrapper
+        .findItems()
+        .find('div')
+        .last()
+        .prop('aria-hidden'),
+    ).toBeTruthy();
   });
 
   it('only one', () => {

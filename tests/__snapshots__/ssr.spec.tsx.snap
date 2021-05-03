@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Overflow.SSR basic 1`] = `
+<div
+  class="rc-overflow"
+>
+  <div
+    class="rc-overflow-item"
+    style="opacity:1;order:0"
+  >
+    Label 0
+  </div>
+  <div
+    aria-hidden="true"
+    class="rc-overflow-item rc-overflow-item-rest"
+    style="opacity:0;height:0;overflow-y:hidden;order:9007199254740991;pointer-events:none"
+  >
+    + 0 ...
+  </div>
+</div>
+`;

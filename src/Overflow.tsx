@@ -55,6 +55,9 @@ export interface OverflowProps<ItemType> extends React.HTMLAttributes<any> {
 
   /** @private This API may be refactor since not well design */
   onVisibleChange?: (visibleCount: number) => void;
+
+  /** When set to `full`, ssr will render full items by default and remove at client side */
+  ssr?: 'full';
 }
 
 function defaultRenderRest<ItemType>(omittedItems: ItemType[]) {
@@ -72,6 +75,7 @@ function Overflow<ItemType = any>(
     renderRawItem,
     itemKey,
     itemWidth = 10,
+    ssr,
     style,
     className,
     maxCount,
@@ -86,7 +90,9 @@ function Overflow<ItemType = any>(
 
   const createUseState = useBatchFrameState();
 
-  const [containerWidth, setContainerWidth] = createUseState(0);
+  const [containerWidth, setContainerWidth] = createUseState<number>(null);
+  const mergedContainerWidth = containerWidth || 0;
+
   const [itemWidths, setItemWidths] = createUseState(
     new Map<React.Key, number>(),
   );
@@ -119,7 +125,14 @@ function Overflow<ItemType = any>(
     let items = data;
 
     if (isResponsive) {
-      items = data.slice(0, Math.min(data.length, containerWidth / itemWidth));
+      if (containerWidth === null && ssr === 'full') {
+        items = data;
+      } else {
+        items = data.slice(
+          0,
+          Math.min(data.length, mergedContainerWidth / itemWidth),
+        );
+      }
     } else if (typeof maxCount === 'number') {
       items = data.slice(0, maxCount);
     }
@@ -192,7 +205,7 @@ function Overflow<ItemType = any>(
   }
 
   React.useLayoutEffect(() => {
-    if (containerWidth && mergedRestWidth && mergedData) {
+    if (mergedContainerWidth && mergedRestWidth && mergedData) {
       let totalWidth = suffixWidth;
 
       const len = mergedData.length;
@@ -219,13 +232,13 @@ function Overflow<ItemType = any>(
 
         if (
           i === lastIndex - 1 &&
-          totalWidth + getItemWidth(lastIndex)! <= containerWidth
+          totalWidth + getItemWidth(lastIndex)! <= mergedContainerWidth
         ) {
           // Additional check if match the end
           updateDisplayCount(lastIndex);
           setSuffixFixedStart(null);
           break;
-        } else if (totalWidth + mergedRestWidth > containerWidth) {
+        } else if (totalWidth + mergedRestWidth > mergedContainerWidth) {
           // Can not hold all the content to show rest
           updateDisplayCount(i - 1);
           setSuffixFixedStart(
@@ -240,11 +253,18 @@ function Overflow<ItemType = any>(
         }
       }
 
-      if (suffix && getItemWidth(0) + suffixWidth > containerWidth) {
+      if (suffix && getItemWidth(0) + suffixWidth > mergedContainerWidth) {
         setSuffixFixedStart(null);
       }
     }
-  }, [containerWidth, itemWidths, restWidth, suffixWidth, getKey, mergedData]);
+  }, [
+    mergedContainerWidth,
+    itemWidths,
+    restWidth,
+    suffixWidth,
+    getKey,
+    mergedData,
+  ]);
 
   // ================================ Render ================================
   const displayRest = restReady && !!omittedItems.length;

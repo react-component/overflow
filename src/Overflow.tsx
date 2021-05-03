@@ -90,6 +90,8 @@ function Overflow<ItemType = any>(
 
   const createUseState = useBatchFrameState();
 
+  const fullySSR = ssr === 'full'
+
   const [containerWidth, setContainerWidth] = createUseState<number>(null);
   const mergedContainerWidth = containerWidth || 0;
 
@@ -103,7 +105,15 @@ function Overflow<ItemType = any>(
   const [suffixWidth, setSuffixWidth] = createUseState(0);
   const [suffixFixedStart, setSuffixFixedStart] = useState<number>(null);
 
-  const [displayCount, setDisplayCount] = useState(0);
+  const [displayCount, setDisplayCount] = useState(null);
+    const mergedDisplayCount = React.useMemo(() => {
+      if (displayCount === null && fullySSR) {
+        return Number.MAX_SAFE_INTEGER;
+      }
+
+      return displayCount || 0;
+    }, [displayCount, containerWidth]);
+
   const [restReady, setRestReady] = useState(false);
 
   const itemPrefixCls = `${prefixCls}-item`;
@@ -125,7 +135,7 @@ function Overflow<ItemType = any>(
     let items = data;
 
     if (isResponsive) {
-      if (containerWidth === null && ssr === 'full') {
+      if (containerWidth === null && fullySSR) {
         items = data;
       } else {
         items = data.slice(
@@ -142,10 +152,10 @@ function Overflow<ItemType = any>(
 
   const omittedItems = useMemo(() => {
     if (isResponsive) {
-      return data.slice(displayCount + 1);
+      return data.slice(mergedDisplayCount + 1);
     }
     return data.slice(mergedData.length);
-  }, [data, mergedData, isResponsive, displayCount]);
+  }, [data, mergedData, isResponsive, mergedDisplayCount]);
 
   // ================================= Item =================================
   const getKey = useCallback(
@@ -299,7 +309,7 @@ function Overflow<ItemType = any>(
               item,
               itemKey: key,
               registerSize,
-              display: index <= displayCount,
+              display: index <= mergedDisplayCount,
             }}
           >
             {renderRawItem(item, index)}
@@ -318,7 +328,7 @@ function Overflow<ItemType = any>(
             renderItem={mergedRenderItem}
             itemKey={key}
             registerSize={registerSize}
-            display={index <= displayCount}
+            display={index <= mergedDisplayCount}
           />
         );
       };
@@ -326,7 +336,7 @@ function Overflow<ItemType = any>(
   // >>>>> Rest node
   let restNode: React.ReactNode;
   const restContextProps = {
-    order: displayRest ? displayCount : Number.MAX_SAFE_INTEGER,
+    order: displayRest ? mergedDisplayCount : Number.MAX_SAFE_INTEGER,
     className: `${itemPrefixCls}-rest`,
     registerSize: registerOverflowSize,
     display: displayRest,
@@ -375,7 +385,7 @@ function Overflow<ItemType = any>(
       {suffix && (
         <Item
           {...itemSharedProps}
-          order={displayCount}
+          order={mergedDisplayCount}
           className={`${itemPrefixCls}-suffix`}
           registerSize={registerSuffixSize}
           display

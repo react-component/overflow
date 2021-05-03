@@ -31,7 +31,7 @@ describe('Overflow.SSR', () => {
   it('basic', () => {
     const wrapper = render(
       <Overflow<ItemType>
-        data={getData(1)}
+        data={getData(2)}
         renderItem={renderItem}
         maxCount="responsive"
         ssr="full"

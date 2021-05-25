@@ -1,7 +1,10 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
-import { ComponentType } from './Overflow';
+import type { ComponentType } from './Overflow';
+
+// Use shared variable to save bundle size
+const UNDEFINED = undefined;
 
 export interface ItemProps<ItemType> extends React.HTMLAttributes<any> {
   prefixCls: string;
@@ -56,16 +59,17 @@ function InternalItem<ItemType>(
 
   // ================================ Render ================================
   const childNode =
-    renderItem && item !== undefined ? renderItem(item) : children;
+    renderItem && item !== UNDEFINED ? renderItem(item) : children;
 
   let overflowStyle: React.CSSProperties | undefined;
   if (!invalidate) {
     overflowStyle = {
       opacity: mergedHidden ? 0 : 1,
-      height: mergedHidden ? 0 : undefined,
-      overflowY: mergedHidden ? 'hidden' : undefined,
-      order: responsive ? order : undefined,
-      pointerEvents: mergedHidden ? 'none' : undefined,
+      height: mergedHidden ? 0 : UNDEFINED,
+      overflowY: mergedHidden ? 'hidden' : UNDEFINED,
+      order: responsive ? order : UNDEFINED,
+      pointerEvents: mergedHidden ? 'none' : UNDEFINED,
+      position: mergedHidden ? 'absolute' : UNDEFINED,
     };
   }
 

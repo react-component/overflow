@@ -172,22 +172,6 @@ describe('Overflow.Responsive', () => {
   });
 
   describe('suffix', () => {
-    it('too short not to pin', () => {
-      const wrapper = mount(
-        <Overflow<ItemType>
-          data={getData(1)}
-          itemKey="key"
-          renderItem={renderItem}
-          maxCount="responsive"
-          suffix="Bamboo"
-        />,
-      );
-
-      wrapper.initSize(100, 20);
-
-      expect(wrapper.findSuffix().props().style).toEqual({});
-    });
-
     it('ping the position', () => {
       const wrapper = mount(
         <Overflow<ItemType>
@@ -240,5 +224,27 @@ describe('Overflow.Responsive', () => {
       expect(wrapper.findRest()).toHaveLength(0);
       expect(wrapper.findSuffix().props().style.position).toBeFalsy();
     });
+  });
+
+  it('render rest directly', () => {
+    const wrapper = mount(
+      <Overflow<ItemType>
+        data={getData(10)}
+        itemKey="key"
+        renderItem={renderItem}
+        maxCount="responsive"
+        renderRawRest={omitItems => {
+          return (
+            <Overflow.Item component="span" className="custom-rest">
+              {omitItems.length}
+            </Overflow.Item>
+          );
+        }}
+      />,
+    );
+
+    wrapper.initSize(100, 20);
+
+    expect(wrapper.find('span.custom-rest').text()).toEqual('6');
   });
 });

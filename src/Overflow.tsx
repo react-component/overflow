@@ -259,11 +259,6 @@ function Overflow<ItemType = any>(
             totalWidth - currentItemWidth - suffixWidth + restWidth,
           );
           break;
-        } else if (i === lastIndex) {
-          // Reach the end
-          updateDisplayCount(lastIndex);
-          setSuffixFixedStart(totalWidth - suffixWidth);
-          break;
         }
       }
 

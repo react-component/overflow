@@ -40,21 +40,12 @@ describe('Overflow.Responsive', () => {
     wrapper.initSize(100, 20); // [0][1][2][3][4][+2](5)(6)
     expect(wrapper.findItems()).toHaveLength(6);
     [true, true, true, true, false, false].forEach((display, i) => {
-      expect(
-        wrapper
-          .findItems()
-          .at(i)
-          .props().display,
-      ).toBe(display);
+      expect(wrapper.findItems().at(i).props().display).toBe(display);
     });
     expect(wrapper.findRest()).toHaveLength(1);
     expect(wrapper.findRest().text()).toEqual('+ 2 ...');
     expect(
-      wrapper
-        .findItems()
-        .find('div')
-        .last()
-        .prop('aria-hidden'),
+      wrapper.findItems().find('div').last().prop('aria-hidden'),
     ).toBeTruthy();
   });
 
@@ -68,6 +59,21 @@ describe('Overflow.Responsive', () => {
       />,
     );
     wrapper.initSize(100, 20);
+
+    expect(wrapper.findItems()).toHaveLength(1);
+    expect(wrapper.findRest().props().display).toBeFalsy();
+  });
+
+  it('just fit', () => {
+    const wrapper = mount(
+      <Overflow<ItemType>
+        data={getData(1)}
+        itemKey="key"
+        renderItem={renderItem}
+        maxCount="responsive"
+      />,
+    );
+    wrapper.initSize(20, 20);
 
     expect(wrapper.findItems()).toHaveLength(1);
     expect(wrapper.findRest().props().display).toBeFalsy();
@@ -218,5 +224,27 @@ describe('Overflow.Responsive', () => {
       expect(wrapper.findRest()).toHaveLength(0);
       expect(wrapper.findSuffix().props().style.position).toBeFalsy();
     });
+  });
+
+  it('render rest directly', () => {
+    const wrapper = mount(
+      <Overflow<ItemType>
+        data={getData(10)}
+        itemKey="key"
+        renderItem={renderItem}
+        maxCount="responsive"
+        renderRawRest={omitItems => {
+          return (
+            <Overflow.Item component="span" className="custom-rest">
+              {omitItems.length}
+            </Overflow.Item>
+          );
+        }}
+      />,
+    );
+
+    wrapper.initSize(100, 20);
+
+    expect(wrapper.find('span.custom-rest').text()).toEqual('6');
   });
 });

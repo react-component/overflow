@@ -6,22 +6,23 @@ import Item from './Item';
 import { useBatchFrameState } from './hooks/useBatchFrameState';
 import RawItem from './RawItem';
 
-export const OverflowContext = React.createContext<{
-  prefixCls: string;
-  responsive: boolean;
-  order: number;
-  registerSize: (key: React.Key, width: number | null) => void;
-  display: boolean;
+export const OverflowContext =
+  React.createContext<{
+    prefixCls: string;
+    responsive: boolean;
+    order: number;
+    registerSize: (key: React.Key, width: number | null) => void;
+    display: boolean;
 
-  invalidate: boolean;
+    invalidate: boolean;
 
-  // Item Usage
-  item?: any;
-  itemKey?: React.Key;
+    // Item Usage
+    item?: any;
+    itemKey?: React.Key;
 
-  // Rest Usage
-  className?: string;
-}>(null);
+    // Rest Usage
+    className?: string;
+  }>(null);
 
 const RESPONSIVE = 'responsive' as const;
 const INVALIDATE = 'invalidate' as const;
@@ -90,7 +91,7 @@ function Overflow<ItemType = any>(
 
   const createUseState = useBatchFrameState();
 
-  const fullySSR = ssr === 'full'
+  const fullySSR = ssr === 'full';
 
   const [containerWidth, setContainerWidth] = createUseState<number>(null);
   const mergedContainerWidth = containerWidth || 0;
@@ -106,13 +107,13 @@ function Overflow<ItemType = any>(
   const [suffixFixedStart, setSuffixFixedStart] = useState<number>(null);
 
   const [displayCount, setDisplayCount] = useState(null);
-    const mergedDisplayCount = React.useMemo(() => {
-      if (displayCount === null && fullySSR) {
-        return Number.MAX_SAFE_INTEGER;
-      }
+  const mergedDisplayCount = React.useMemo(() => {
+    if (displayCount === null && fullySSR) {
+      return Number.MAX_SAFE_INTEGER;
+    }
 
-      return displayCount || 0;
-    }, [displayCount, containerWidth]);
+    return displayCount || 0;
+  }, [displayCount, containerWidth]);
 
   const [restReady, setRestReady] = useState(false);
 
@@ -241,8 +242,11 @@ function Overflow<ItemType = any>(
         totalWidth += currentItemWidth;
 
         if (
-          i === lastIndex - 1 &&
-          totalWidth + getItemWidth(lastIndex)! <= mergedContainerWidth
+          // Only one means `totalWidth` is the final width
+          (lastIndex === 0 && totalWidth <= mergedContainerWidth) ||
+          // Last two width will be the final width
+          (i === lastIndex - 1 &&
+            totalWidth + getItemWidth(lastIndex)! <= mergedContainerWidth)
         ) {
           // Additional check if match the end
           updateDisplayCount(lastIndex);
@@ -254,11 +258,6 @@ function Overflow<ItemType = any>(
           setSuffixFixedStart(
             totalWidth - currentItemWidth - suffixWidth + restWidth,
           );
-          break;
-        } else if (i === lastIndex) {
-          // Reach the end
-          updateDisplayCount(lastIndex);
-          setSuffixFixedStart(totalWidth - suffixWidth);
           break;
         }
       }
@@ -425,9 +424,9 @@ type FilledOverflowType = ForwardOverflowType & {
 
 ForwardOverflow.displayName = 'Overflow';
 
-((ForwardOverflow as unknown) as FilledOverflowType).Item = RawItem;
-((ForwardOverflow as unknown) as FilledOverflowType).RESPONSIVE = RESPONSIVE;
-((ForwardOverflow as unknown) as FilledOverflowType).INVALIDATE = INVALIDATE;
+(ForwardOverflow as unknown as FilledOverflowType).Item = RawItem;
+(ForwardOverflow as unknown as FilledOverflowType).RESPONSIVE = RESPONSIVE;
+(ForwardOverflow as unknown as FilledOverflowType).INVALIDATE = INVALIDATE;
 
 // Convert to generic type
-export default (ForwardOverflow as unknown) as FilledOverflowType;
+export default ForwardOverflow as unknown as FilledOverflowType;

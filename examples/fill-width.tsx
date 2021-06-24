@@ -2,6 +2,7 @@ import React from 'react';
 import Overflow from '../src';
 import '../assets/index.less';
 import './common.less';
+import useIsomorphicLayoutEffect from '../src/hooks/useIsomorphicLayoutEffect';
 
 interface ItemType {
   value: string | number;
@@ -63,7 +64,7 @@ const Demo = () => {
   const inputRef = React.useRef<HTMLInputElement>();
   const measureRef = React.useRef<HTMLDivElement>();
 
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     setInputWidth(measureRef.current.offsetWidth);
   }, [inputValue]);
 

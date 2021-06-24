@@ -5,24 +5,24 @@ import ResizeObserver from 'rc-resize-observer';
 import Item from './Item';
 import { useBatchFrameState } from './hooks/useBatchFrameState';
 import RawItem from './RawItem';
+import useIsomorphicLayoutEffect from './hooks/useIsomorphicLayoutEffect';
 
-export const OverflowContext =
-  React.createContext<{
-    prefixCls: string;
-    responsive: boolean;
-    order: number;
-    registerSize: (key: React.Key, width: number | null) => void;
-    display: boolean;
+export const OverflowContext = React.createContext<{
+  prefixCls: string;
+  responsive: boolean;
+  order: number;
+  registerSize: (key: React.Key, width: number | null) => void;
+  display: boolean;
 
-    invalidate: boolean;
+  invalidate: boolean;
 
-    // Item Usage
-    item?: any;
-    itemKey?: React.Key;
+  // Item Usage
+  item?: any;
+  itemKey?: React.Key;
 
-    // Rest Usage
-    className?: string;
-  }>(null);
+  // Rest Usage
+  className?: string;
+}>(null);
 
 const RESPONSIVE = 'responsive' as const;
 const INVALIDATE = 'invalidate' as const;
@@ -215,7 +215,7 @@ function Overflow<ItemType = any>(
     return itemWidths.get(getKey(mergedData[index], index));
   }
 
-  React.useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (mergedContainerWidth && mergedRestWidth && mergedData) {
       let totalWidth = suffixWidth;
 

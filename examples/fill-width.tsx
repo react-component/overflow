@@ -1,5 +1,6 @@
 import React from 'react';
 import Overflow from '../src';
+import useLayoutEffect from '../src/hooks/useLayoutEffect';
 import '../assets/index.less';
 import './common.less';
 
@@ -63,7 +64,7 @@ const Demo = () => {
   const inputRef = React.useRef<HTMLInputElement>();
   const measureRef = React.useRef<HTMLDivElement>();
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     setInputWidth(measureRef.current.offsetWidth);
   }, [inputValue]);
 

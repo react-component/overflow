@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useState, useMemo, useCallback } from 'react';
 import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
+import useLayoutEffect from "rc-util/lib/hooks/useLayoutEffect";
 import Item from './Item';
 import { useBatchFrameState } from './hooks/useBatchFrameState';
 import RawItem from './RawItem';
@@ -215,7 +216,7 @@ function Overflow<ItemType = any>(
     return itemWidths.get(getKey(mergedData[index], index));
   }
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     if (mergedContainerWidth && mergedRestWidth && mergedData) {
       let totalWidth = suffixWidth;
 

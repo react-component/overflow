@@ -1,5 +1,6 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef } from 'react';
 import raf from 'rc-util/lib/raf';
+import useState from 'rc-util/lib/hooks/useState';
 
 /**
  * State generate. Return a `setState` but it will flush all state with one render to save perf.
@@ -8,16 +9,8 @@ import raf from 'rc-util/lib/raf';
 export function useBatchFrameState() {
   const [, forceUpdate] = useState({});
   const statesRef = useRef<any[]>([]);
-  const destroyRef = useRef<boolean>(false);
   let walkingIndex = 0;
   let beforeFrameId: number = 0;
-
-  useEffect(
-    () => () => {
-      destroyRef.current = true;
-    },
-    [],
-  );
 
   function createState<T>(
     defaultValue: T,
@@ -41,9 +34,7 @@ export function useBatchFrameState() {
 
       // Flush with batch
       beforeFrameId = raf(() => {
-        if (!destroyRef.current) {
-          forceUpdate({});
-        }
+        forceUpdate({}, true);
       });
     }
 

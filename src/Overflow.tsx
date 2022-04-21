@@ -2,28 +2,27 @@ import * as React from 'react';
 import { useState, useMemo, useCallback } from 'react';
 import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
-import useLayoutEffect from "rc-util/lib/hooks/useLayoutEffect";
+import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import Item from './Item';
 import { useBatchFrameState } from './hooks/useBatchFrameState';
 import RawItem from './RawItem';
 
-export const OverflowContext =
-  React.createContext<{
-    prefixCls: string;
-    responsive: boolean;
-    order: number;
-    registerSize: (key: React.Key, width: number | null) => void;
-    display: boolean;
+export const OverflowContext = React.createContext<{
+  prefixCls: string;
+  responsive: boolean;
+  order: number;
+  registerSize: (key: React.Key, width: number | null) => void;
+  display: boolean;
 
-    invalidate: boolean;
+  invalidate: boolean;
 
-    // Item Usage
-    item?: any;
-    itemKey?: React.Key;
+  // Item Usage
+  item?: any;
+  itemKey?: React.Key;
 
-    // Rest Usage
-    className?: string;
-  }>(null);
+  // Rest Usage
+  className?: string;
+}>(null);
 
 const RESPONSIVE = 'responsive' as const;
 const INVALIDATE = 'invalidate' as const;
@@ -231,7 +230,12 @@ function Overflow<ItemType = any>(
       }
 
       for (let i = 0; i < len; i += 1) {
-        const currentItemWidth = getItemWidth(i);
+        let currentItemWidth = getItemWidth(i);
+
+        // Fully will always render
+        if (fullySSR) {
+          currentItemWidth = currentItemWidth || 0;
+        }
 
         // Break since data not ready
         if (currentItemWidth === undefined) {

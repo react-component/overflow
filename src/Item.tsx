@@ -65,7 +65,7 @@ function InternalItem<ItemType>(
   if (!invalidate) {
     overflowStyle = {
       opacity: mergedHidden ? 0 : 1,
-      height: mergedHidden ? 0 : UNDEFINED,
+      // height: mergedHidden ? 0 : UNDEFINED,
       overflowY: mergedHidden ? 'hidden' : UNDEFINED,
       order: responsive ? order : UNDEFINED,
       pointerEvents: mergedHidden ? 'none' : UNDEFINED,

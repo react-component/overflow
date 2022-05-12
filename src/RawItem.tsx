@@ -1,7 +1,8 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import Item from './Item';
-import { ComponentType, OverflowContext } from './Overflow';
+import { OverflowContext } from './Overflow';
+import type { ComponentType } from './Overflow';
 
 export interface RawItemProps extends React.HTMLAttributes<any> {
   component?: ComponentType;

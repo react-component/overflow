@@ -123,19 +123,21 @@ function Overflow<ItemType = any>(
   const mergedRestWidth = Math.max(prevRestWidth, restWidth);
 
   // ================================= Data =================================
-  const isResponsive = data.length && maxCount === RESPONSIVE;
+  const isResponsive = maxCount === RESPONSIVE;
+  const shouldResponsive = data.length && isResponsive;
   const invalidate = maxCount === INVALIDATE;
 
   /**
    * When is `responsive`, we will always render rest node to get the real width of it for calculation
    */
   const showRest =
-    isResponsive || (typeof maxCount === 'number' && data.length > maxCount);
+    shouldResponsive ||
+    (typeof maxCount === 'number' && data.length > maxCount);
 
   const mergedData = useMemo(() => {
     let items = data;
 
-    if (isResponsive) {
+    if (shouldResponsive) {
       if (containerWidth === null && fullySSR) {
         items = data;
       } else {
@@ -149,14 +151,14 @@ function Overflow<ItemType = any>(
     }
 
     return items;
-  }, [data, itemWidth, containerWidth, maxCount, isResponsive]);
+  }, [data, itemWidth, containerWidth, maxCount, shouldResponsive]);
 
   const omittedItems = useMemo(() => {
-    if (isResponsive) {
+    if (shouldResponsive) {
       return data.slice(mergedDisplayCount + 1);
     }
     return data.slice(mergedData.length);
-  }, [data, mergedData, isResponsive, mergedDisplayCount]);
+  }, [data, mergedData, shouldResponsive, mergedDisplayCount]);
 
   // ================================= Item =================================
   const getKey = useCallback(
@@ -284,7 +286,7 @@ function Overflow<ItemType = any>(
   const displayRest = restReady && !!omittedItems.length;
 
   let suffixStyle: React.CSSProperties = {};
-  if (suffixFixedStart !== null && isResponsive) {
+  if (suffixFixedStart !== null && shouldResponsive) {
     suffixStyle = {
       position: 'absolute',
       left: suffixFixedStart,
@@ -294,7 +296,7 @@ function Overflow<ItemType = any>(
 
   const itemSharedProps = {
     prefixCls: itemPrefixCls,
-    responsive: isResponsive,
+    responsive: shouldResponsive,
     component: itemComponent,
     invalidate,
   };
@@ -389,6 +391,8 @@ function Overflow<ItemType = any>(
       {suffix && (
         <Item
           {...itemSharedProps}
+          responsive={isResponsive}
+          responsiveDisabled={!shouldResponsive}
           order={mergedDisplayCount}
           className={`${itemPrefixCls}-suffix`}
           registerSize={registerSuffixSize}
@@ -403,7 +407,7 @@ function Overflow<ItemType = any>(
 
   if (isResponsive) {
     overflowNode = (
-      <ResizeObserver onResize={onOverflowResize}>
+      <ResizeObserver onResize={onOverflowResize} disabled={!shouldResponsive}>
         {overflowNode}
       </ResizeObserver>
     );

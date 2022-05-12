@@ -13,6 +13,12 @@ export interface ItemProps<ItemType> extends React.HTMLAttributes<any> {
   style?: React.CSSProperties;
   renderItem?: (item: ItemType) => React.ReactNode;
   responsive?: boolean;
+  // https://github.com/ant-design/ant-design/issues/35475
+  /**
+   * @private To make node structure stable. We need keep wrap with ResizeObserver.
+   * But disable it when it's no need to real measure.
+   */
+  responsiveDisabled?: boolean;
   itemKey?: React.Key;
   registerSize: (key: React.Key, width: number | null) => void;
   children?: React.ReactNode;
@@ -32,6 +38,7 @@ function InternalItem<ItemType>(
     item,
     renderItem,
     responsive,
+    responsiveDisabled,
     registerSize,
     itemKey,
     className,
@@ -99,6 +106,7 @@ function InternalItem<ItemType>(
         onResize={({ offsetWidth }) => {
           internalRegisterSize(offsetWidth);
         }}
+        disabled={responsiveDisabled}
       >
         {itemNode}
       </ResizeObserver>

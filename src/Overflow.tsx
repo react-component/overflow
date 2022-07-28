@@ -177,6 +177,13 @@ function Overflow<ItemType = any>(
   );
 
   function updateDisplayCount(count: number, notReady?: boolean) {
+    // React 18 will sync render even when the value is same in some case.
+    // We take `mergedData` as deps which may cause dead loop if it's dynamic generate.
+    // ref: https://github.com/ant-design/ant-design/issues/36559
+    if (displayCount === count) {
+      return;
+    }
+
     setDisplayCount(count);
     if (!notReady) {
       setRestReady(count < data.length - 1);

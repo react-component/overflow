@@ -176,11 +176,19 @@ function Overflow<ItemType = any>(
     [renderItem],
   );
 
-  function updateDisplayCount(count: number, notReady?: boolean) {
+  function updateDisplayCount(
+    count: number,
+    suffixFixedStartVal: number,
+    notReady?: boolean,
+  ) {
     // React 18 will sync render even when the value is same in some case.
     // We take `mergedData` as deps which may cause dead loop if it's dynamic generate.
     // ref: https://github.com/ant-design/ant-design/issues/36559
-    if (displayCount === count) {
+    if (
+      displayCount === count &&
+      (suffixFixedStartVal === undefined ||
+        suffixFixedStartVal === suffixFixedStart)
+    ) {
       return;
     }
 
@@ -189,6 +197,10 @@ function Overflow<ItemType = any>(
       setRestReady(count < data.length - 1);
 
       onVisibleChange?.(count);
+    }
+
+    if (suffixFixedStartVal !== undefined) {
+      setSuffixFixedStart(suffixFixedStartVal);
     }
   }
 
@@ -233,8 +245,7 @@ function Overflow<ItemType = any>(
 
       // When data count change to 0, reset this since not loop will reach
       if (!len) {
-        updateDisplayCount(0);
-        setSuffixFixedStart(null);
+        updateDisplayCount(0, null);
         return;
       }
 
@@ -248,7 +259,7 @@ function Overflow<ItemType = any>(
 
         // Break since data not ready
         if (currentItemWidth === undefined) {
-          updateDisplayCount(i - 1, true);
+          updateDisplayCount(i - 1, undefined, true);
           break;
         }
 
@@ -263,13 +274,12 @@ function Overflow<ItemType = any>(
             totalWidth + getItemWidth(lastIndex)! <= mergedContainerWidth)
         ) {
           // Additional check if match the end
-          updateDisplayCount(lastIndex);
-          setSuffixFixedStart(null);
+          updateDisplayCount(lastIndex, null);
           break;
         } else if (totalWidth + mergedRestWidth > mergedContainerWidth) {
           // Can not hold all the content to show rest
-          updateDisplayCount(i - 1);
-          setSuffixFixedStart(
+          updateDisplayCount(
+            i - 1,
             totalWidth - currentItemWidth - suffixWidth + restWidth,
           );
           break;

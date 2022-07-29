@@ -47,7 +47,7 @@ function renderRest(items: ItemType[]) {
 
 const Demo = () => {
   const [responsive, setResponsive] = React.useState(true);
-  const [data, setData] = React.useState(createData(1));
+  const [data, setData] = React.useState(createData(2));
 
   return (
     <div style={{ padding: 32 }}>
@@ -80,7 +80,7 @@ const Demo = () => {
         style={{
           border: '5px solid green',
           padding: 8,
-          maxWidth: 300,
+          width: 100,
           marginTop: 32,
         }}
       >

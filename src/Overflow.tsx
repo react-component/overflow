@@ -185,10 +185,9 @@ function Overflow<ItemType = any>(
     // We take `mergedData` as deps which may cause dead loop if it's dynamic generate.
     // ref: https://github.com/ant-design/ant-design/issues/36559
     if (
-      displayCount === count
-      // displayCount === count &&
-      // (suffixFixedStartVal === undefined ||
-      //   suffixFixedStartVal === suffixFixedStart)
+      displayCount === count &&
+      (suffixFixedStartVal === undefined ||
+        suffixFixedStartVal === suffixFixedStart)
     ) {
       return;
     }
@@ -207,7 +206,6 @@ function Overflow<ItemType = any>(
 
   // ================================= Size =================================
   function onOverflowResize(_: object, element: HTMLElement) {
-    console.log('resize overflow');
     setContainerWidth(element.clientWidth);
   }
 
@@ -239,7 +237,6 @@ function Overflow<ItemType = any>(
   }
 
   useLayoutEffect(() => {
-    console.log('Effect:', mergedContainerWidth, mergedRestWidth, mergedData);
     if (mergedContainerWidth && mergedRestWidth && mergedData) {
       let totalWidth = suffixWidth;
 

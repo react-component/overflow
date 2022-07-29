@@ -34,24 +34,28 @@ describe('Overflow.github', () => {
     jest.useRealTimers();
   });
 
-  const clientWidths = {
+  const widths = {
     'rc-overflow': 100,
+    'rc-overflow-item': 90,
+  };
+
+  const propDef = {
+    get() {
+      let targetWidth = 0;
+      Object.keys(widths).forEach(key => {
+        if (this.className.includes(key)) {
+          targetWidth = widths[key];
+        }
+      });
+
+      return targetWidth;
+    },
   };
 
   beforeAll(() => {
     spyElementPrototypes(HTMLDivElement, {
-      clientWidth: {
-        get() {
-          let targetWidth = 0;
-          Object.keys(clientWidths).forEach(key => {
-            if (this.className.includes(key)) {
-              targetWidth = clientWidths[key];
-            }
-          });
-
-          return targetWidth;
-        },
-      },
+      clientWidth: propDef,
+      offsetWidth: propDef,
     });
   });
 
@@ -75,19 +79,29 @@ describe('Overflow.github', () => {
       />,
     );
 
-    // width resize
+    // width & rest resize
     await triggerResize(container.querySelector('.rc-overflow'));
-
-    setTimeout(() => {
-      console.log(2333);
-    }, 1000);
+    await triggerResize(container.querySelector('.rc-overflow-item-rest'));
 
     act(() => {
       jest.runAllTimers();
     });
+
+    const items = Array.from(
+      container.querySelectorAll<HTMLDivElement>(
+        '.rc-overflow-item:not(.rc-overflow-item-rest)',
+      ),
+    );
+
+    for (let i = 0; i < items.length; i += 1) {
+      await triggerResize(items[i]);
+    }
     act(() => {
       jest.runAllTimers();
     });
-    console.log(jest.getTimerCount());
+
+    expect(container.querySelector('.rc-overflow-item-rest')).toHaveStyle({
+      opacity: 1,
+    });
   });
 });

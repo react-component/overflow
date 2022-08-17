@@ -41,7 +41,7 @@ export interface OverflowProps<ItemType> extends React.HTMLAttributes<any> {
   itemKey?: React.Key | ((item: ItemType) => React.Key);
   /** Used for `responsive`. It will limit render node to avoid perf issue */
   itemWidth?: number;
-  renderItem?: (item: ItemType) => React.ReactNode;
+  renderItem?: (item: ItemType, index: number) => React.ReactNode;
   /** @private Do not use in your production. Render raw node that need wrap Item by developer self */
   renderRawItem?: (item: ItemType, index: number) => React.ReactElement;
   maxCount?: number | typeof RESPONSIVE | typeof INVALIDATE;
@@ -172,7 +172,7 @@ function Overflow<ItemType = any>(
   );
 
   const mergedRenderItem = useCallback(
-    renderItem || ((item: ItemType) => item),
+    renderItem || ((item: ItemType, index: number) => item),
     [renderItem],
   );
 

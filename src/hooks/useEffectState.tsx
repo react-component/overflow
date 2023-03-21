@@ -1,6 +1,7 @@
 import useEvent from 'rc-util/lib/hooks/useEvent';
 import * as React from 'react';
 import { unstable_batchedUpdates } from 'react-dom';
+import channelUpdate from './channelUpdate';
 
 type Updater<T> = T | ((origin: T) => T);
 
@@ -20,16 +21,14 @@ export function useBatcher() {
     if (!updateFuncRef.current) {
       updateFuncRef.current = [];
 
-      const channel = new MessageChannel();
-      channel.port1.onmessage = () => {
+      channelUpdate(() => {
         unstable_batchedUpdates(() => {
           updateFuncRef.current.forEach(fn => {
             fn();
           });
           updateFuncRef.current = null;
         });
-      };
-      channel.port2.postMessage(undefined);
+      });
     }
 
     updateFuncRef.current.push(callback);

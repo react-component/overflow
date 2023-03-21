@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import Item from './Item';
-import useEffectState from './hooks/useEffectState';
+import useEffectState, { useBatcher } from './hooks/useEffectState';
 import RawItem from './RawItem';
 
 export const OverflowContext = React.createContext<{
@@ -91,17 +91,32 @@ function Overflow<ItemType = any>(
 
   const fullySSR = ssr === 'full';
 
-  const [containerWidth, setContainerWidth] = useEffectState<number>(null);
+  const notifyEffectUpdate = useBatcher();
+
+  const [containerWidth, setContainerWidth] = useEffectState<number>(
+    notifyEffectUpdate,
+    null,
+  );
   const mergedContainerWidth = containerWidth || 0;
 
   const [itemWidths, setItemWidths] = useEffectState(
+    notifyEffectUpdate,
     new Map<React.Key, number>(),
   );
 
-  const [prevRestWidth, setPrevRestWidth] = useEffectState<number>(0);
-  const [restWidth, setRestWidth] = useEffectState<number>(0);
+  const [prevRestWidth, setPrevRestWidth] = useEffectState<number>(
+    notifyEffectUpdate,
+    0,
+  );
+  const [restWidth, setRestWidth] = useEffectState<number>(
+    notifyEffectUpdate,
+    0,
+  );
 
-  const [suffixWidth, setSuffixWidth] = useEffectState<number>(0);
+  const [suffixWidth, setSuffixWidth] = useEffectState<number>(
+    notifyEffectUpdate,
+    0,
+  );
   const [suffixFixedStart, setSuffixFixedStart] = useState<number>(null);
 
   const [displayCount, setDisplayCount] = useState<number>(null);
@@ -114,6 +129,8 @@ function Overflow<ItemType = any>(
   }, [displayCount, containerWidth]);
 
   const [restReady, setRestReady] = useState(false);
+
+  console.log('render');
 
   const itemPrefixCls = `${prefixCls}-item`;
 

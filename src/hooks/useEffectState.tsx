@@ -6,10 +6,49 @@ type Updater<T> = T | ((origin: T) => T);
 
 const EMPTY = {};
 
+type UpdateCallbackFunc = (first: boolean) => void;
+
+type NotifyEffectUpdate = (key: number, callback: UpdateCallbackFunc) => void;
+
+/**
+ * Batcher for record any `useEffectState` need update.
+ */
+export function useBatcher() {
+  // Updater Trigger
+  const [updateCount, setUpdateCount] = React.useState(0);
+  const updateFuncRef =
+    React.useRef<UpdateCallbackFunc[]>(null);
+
+  // Effect updater
+  useLayoutEffect(() => {
+    if (updateCount !== 0) {
+      const keys: Record<number, boolean> = {};
+      updateFuncRef.current.forEach(([key, callback]) => {
+        callback(!keys[key]);
+        keys[key] = true;
+      });
+      updateFuncRef.current = null;
+    }
+  }, [updateCount]);
+
+  // Notify update
+  const notifyEffectUpdate: NotifyEffectUpdate = (key, callback) => {
+    if (!updateFuncRef.current) {
+      updateFuncRef.current = [];
+      setUpdateCount(c => c + 1);
+    }
+
+    updateFuncRef.current.push([key, callback]);
+  };
+
+  return notifyEffectUpdate;
+}
+
 /**
  * Trigger state update by `useLayoutEffect` to save perf.
  */
 export default function useEffectState<T extends string | number | object>(
+  notifyEffectUpdate: NotifyEffectUpdate,
   defaultValue?: T,
 ): [T, (value: Updater<T>) => void] {
   // Value

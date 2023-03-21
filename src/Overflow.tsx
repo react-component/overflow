@@ -130,8 +130,6 @@ function Overflow<ItemType = any>(
 
   const [restReady, setRestReady] = useState(false);
 
-  console.log('render');
-
   const itemPrefixCls = `${prefixCls}-item`;
 
   // Always use the max width to avoid blink

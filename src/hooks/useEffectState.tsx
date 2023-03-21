@@ -17,13 +17,11 @@ export function useBatcher() {
 
   // Notify update
   const notifyEffectUpdate: NotifyEffectUpdate = callback => {
-    // console.error('Update');
     if (!updateFuncRef.current) {
       updateFuncRef.current = [];
 
       const channel = new MessageChannel();
       channel.port1.onmessage = () => {
-        // console.log('!!! channel update !!!');
         unstable_batchedUpdates(() => {
           updateFuncRef.current.forEach(fn => {
             fn();
@@ -34,7 +32,6 @@ export function useBatcher() {
       channel.port2.postMessage(undefined);
     }
 
-    // console.log('push');
     updateFuncRef.current.push(callback);
   };
 

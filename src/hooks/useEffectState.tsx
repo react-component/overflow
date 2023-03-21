@@ -23,6 +23,7 @@ export default function useEffectState<T extends string | number | object>(
   useLayoutEffect(() => {
     if (updateCount !== 0) {
       setStateValue(valRef.current as T);
+      valRef.current = EMPTY;
     }
   }, [updateCount]);
 

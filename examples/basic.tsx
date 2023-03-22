@@ -76,11 +76,20 @@ const Demo = () => {
         <option value={200}>200</option>
       </select>
 
+      <button
+        onClick={() => {
+          setData(createData(data.length ? 0 : 1));
+        }}
+      >
+        Trigger
+      </button>
+
       <div
         style={{
           border: '5px solid green',
           padding: 8,
           maxWidth: 300,
+          // width: 120,
           marginTop: 32,
         }}
       >
@@ -89,6 +98,7 @@ const Demo = () => {
           renderItem={renderItem}
           renderRest={renderRest}
           maxCount={responsive ? 'responsive' : 6}
+          // suffix={<span>1</span>}
         />
       </div>
     </div>

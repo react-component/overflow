@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import Item from './Item';
-import { useBatchFrameState } from './hooks/useBatchFrameState';
+import useEffectState, { useBatcher } from './hooks/useEffectState';
 import RawItem from './RawItem';
 
 export const OverflowContext = React.createContext<{
@@ -89,24 +89,37 @@ function Overflow<ItemType = any>(
     ...restProps
   } = props;
 
-  const createUseState = useBatchFrameState();
-
   const fullySSR = ssr === 'full';
 
-  const [containerWidth, setContainerWidth] = createUseState<number>(null);
+  const notifyEffectUpdate = useBatcher();
+
+  const [containerWidth, setContainerWidth] = useEffectState<number>(
+    notifyEffectUpdate,
+    null,
+  );
   const mergedContainerWidth = containerWidth || 0;
 
-  const [itemWidths, setItemWidths] = createUseState(
+  const [itemWidths, setItemWidths] = useEffectState(
+    notifyEffectUpdate,
     new Map<React.Key, number>(),
   );
 
-  const [prevRestWidth, setPrevRestWidth] = createUseState(0);
-  const [restWidth, setRestWidth] = createUseState(0);
+  const [prevRestWidth, setPrevRestWidth] = useEffectState<number>(
+    notifyEffectUpdate,
+    0,
+  );
+  const [restWidth, setRestWidth] = useEffectState<number>(
+    notifyEffectUpdate,
+    0,
+  );
 
-  const [suffixWidth, setSuffixWidth] = createUseState(0);
+  const [suffixWidth, setSuffixWidth] = useEffectState<number>(
+    notifyEffectUpdate,
+    0,
+  );
   const [suffixFixedStart, setSuffixFixedStart] = useState<number>(null);
 
-  const [displayCount, setDisplayCount] = useState(null);
+  const [displayCount, setDisplayCount] = useState<number>(null);
   const mergedDisplayCount = React.useMemo(() => {
     if (displayCount === null && fullySSR) {
       return Number.MAX_SAFE_INTEGER;

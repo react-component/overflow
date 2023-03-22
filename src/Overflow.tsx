@@ -250,7 +250,11 @@ function Overflow<ItemType = any>(
   }
 
   useLayoutEffect(() => {
-    if (mergedContainerWidth && mergedRestWidth && mergedData) {
+    if (
+      mergedContainerWidth &&
+      typeof mergedRestWidth === 'number' &&
+      mergedData
+    ) {
       let totalWidth = suffixWidth;
 
       const len = mergedData.length;

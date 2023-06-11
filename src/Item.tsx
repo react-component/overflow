@@ -1,7 +1,7 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
-import type { ComponentType } from './Overflow';
+import type { ComponentType } from './RawItem';
 
 // Use shared variable to save bundle size
 const UNDEFINED = undefined;

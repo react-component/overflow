@@ -11,6 +11,10 @@ import RawItem, { OverflowContext } from './RawItem';
 const RESPONSIVE = 'responsive' as const;
 const INVALIDATE = 'invalidate' as const;
 
+export { OverflowContext } from './RawItem';
+
+export type { ComponentType } from './RawItem';
+
 export interface OverflowProps<ItemType> extends React.HTMLAttributes<any> {
   prefixCls?: string;
   className?: string;

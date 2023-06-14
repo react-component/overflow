@@ -1,8 +1,13 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import Item from './Item';
-import { OverflowContext } from './Overflow';
-import type { ComponentType } from './Overflow';
+import { OverflowContext } from './context';
+
+export type ComponentType =
+  | React.ComponentType<any>
+  | React.ForwardRefExoticComponent<any>
+  | React.FC<any>
+  | keyof React.ReactHTML;
 
 export interface RawItemProps extends React.HTMLAttributes<any> {
   component?: ComponentType;

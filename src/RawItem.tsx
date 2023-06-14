@@ -1,29 +1,13 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import Item from './Item';
+import { OverflowContext } from './context';
 
 export type ComponentType =
   | React.ComponentType<any>
   | React.ForwardRefExoticComponent<any>
   | React.FC<any>
   | keyof React.ReactHTML;
-
-export const OverflowContext = React.createContext<{
-  prefixCls: string;
-  responsive: boolean;
-  order: number;
-  registerSize: (key: React.Key, width: number | null) => void;
-  display: boolean;
-
-  invalidate: boolean;
-
-  // Item Usage
-  item?: any;
-  itemKey?: React.Key;
-
-  // Rest Usage
-  className?: string;
-}>(null);
 
 export interface RawItemProps extends React.HTMLAttributes<any> {
   component?: ComponentType;

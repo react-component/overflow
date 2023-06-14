@@ -6,12 +6,13 @@ import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
 import Item from './Item';
 import useEffectState, { useBatcher } from './hooks/useEffectState';
 import type { ComponentType } from './RawItem';
-import RawItem, { OverflowContext } from './RawItem';
+import RawItem from './RawItem';
+import { OverflowContext } from './context';
 
 const RESPONSIVE = 'responsive' as const;
 const INVALIDATE = 'invalidate' as const;
 
-export { OverflowContext } from './RawItem';
+export { OverflowContext } from './context';
 
 export type { ComponentType } from './RawItem';
 

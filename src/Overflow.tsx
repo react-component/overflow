@@ -313,11 +313,11 @@ function Overflow<ItemType = any>(
     invalidate,
     style: isResponsiveAndFirstRender
       ? {
-          maxWidth: '0px',
-          padding: '0px',
-          margin: '0px',
-          borderWidth: '0px',
-          overflowX: 'hidden',
+          maxWidth: 0,
+          padding: 0,
+          margin: 0,
+          borderWidth: 0,
+          'overflow-x': 'hidden',
         }
       : undefined,
   };
@@ -327,9 +327,11 @@ function Overflow<ItemType = any>(
     ? (item: ItemType, index: number) => {
         const key = getKey(item, index);
         const isIdxCheckPass = index <= mergedDisplayCount;
-        // in responsive case, item's `display` can be set to true only if its corresponding width is valid and pass the index check
+        // in responsive case, item's `display` can be set to `true` when:
+        // 1) at initial render; 2) its corresponding width is valid and pass the index check
         const shouldDisplay = isResponsive
-          ? isIdxCheckPass && getItemWidth(index) > 0
+          ? isResponsiveAndFirstRender ||
+            (isIdxCheckPass && getItemWidth(index) > 0)
           : isIdxCheckPass;
 
         return (
@@ -353,7 +355,8 @@ function Overflow<ItemType = any>(
         const isIdxCheckPass = index <= mergedDisplayCount;
 
         const shouldDisplay = isResponsive
-          ? isIdxCheckPass && getItemWidth(index) > 0
+          ? isResponsiveAndFirstRender ||
+            (isIdxCheckPass && getItemWidth(index) > 0)
           : isIdxCheckPass;
 
         return (

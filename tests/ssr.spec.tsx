@@ -34,7 +34,6 @@ describe('Overflow.SSR', () => {
         data={getData(2)}
         renderItem={renderItem}
         maxCount="responsive"
-        ssr="full"
       />,
     );
 

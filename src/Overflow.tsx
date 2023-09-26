@@ -39,9 +39,6 @@ export interface OverflowProps<ItemType> extends React.HTMLAttributes<any> {
 
   /** @private This API may be refactor since not well design */
   onVisibleChange?: (visibleCount: number) => void;
-
-  /** When set to `full`, ssr will render full items by default and remove at client side */
-  ssr?: 'full';
 }
 
 function defaultRenderRest<ItemType>(omittedItems: ItemType[]) {
@@ -59,7 +56,6 @@ function Overflow<ItemType = any>(
     renderRawItem,
     itemKey,
     itemWidth = 10,
-    ssr,
     style,
     className,
     maxCount,
@@ -71,8 +67,6 @@ function Overflow<ItemType = any>(
     onVisibleChange,
     ...restProps
   } = props;
-
-  const fullySSR = ssr === 'full';
 
   const notifyEffectUpdate = useBatcher();
 
@@ -104,7 +98,7 @@ function Overflow<ItemType = any>(
 
   const [displayCount, setDisplayCount] = useState<number>(null);
   const mergedDisplayCount = React.useMemo(() => {
-    if (displayCount === null && fullySSR) {
+    if (displayCount === null) {
       return Number.MAX_SAFE_INTEGER;
     }
 
@@ -134,9 +128,7 @@ function Overflow<ItemType = any>(
     let items = data;
 
     if (shouldResponsive) {
-      if (containerWidth === null && fullySSR) {
-        items = data;
-      } else {
+      if (containerWidth !== null) {
         items = data.slice(
           0,
           Math.min(data.length, mergedContainerWidth / itemWidth),
@@ -147,7 +139,14 @@ function Overflow<ItemType = any>(
     }
 
     return items;
-  }, [data, itemWidth, containerWidth, maxCount, shouldResponsive]);
+  }, [
+    data,
+    itemWidth,
+    containerWidth,
+    maxCount,
+    shouldResponsive,
+    mergedContainerWidth,
+  ]);
 
   const omittedItems = useMemo(() => {
     if (shouldResponsive) {
@@ -250,12 +249,7 @@ function Overflow<ItemType = any>(
       }
 
       for (let i = 0; i < len; i += 1) {
-        let currentItemWidth = getItemWidth(i);
-
-        // Fully will always render
-        if (fullySSR) {
-          currentItemWidth = currentItemWidth || 0;
-        }
+        const currentItemWidth = getItemWidth(i);
 
         // Break since data not ready
         if (currentItemWidth === undefined) {
@@ -301,6 +295,7 @@ function Overflow<ItemType = any>(
 
   // ================================ Render ================================
   const displayRest = restReady && !!omittedItems.length;
+  const isResponsiveAndFirstRender = isResponsive && containerWidth === null;
 
   let suffixStyle: React.CSSProperties = {};
   if (suffixFixedStart !== null && shouldResponsive) {
@@ -316,12 +311,26 @@ function Overflow<ItemType = any>(
     responsive: shouldResponsive,
     component: itemComponent,
     invalidate,
+    style: isResponsiveAndFirstRender
+      ? {
+          maxWidth: '0px',
+          padding: '0px',
+          margin: '0px',
+          borderWidth: '0px',
+          overflowX: 'hidden',
+        }
+      : undefined,
   };
 
   // >>>>> Choice render fun by `renderRawItem`
   const internalRenderItemNode = renderRawItem
     ? (item: ItemType, index: number) => {
         const key = getKey(item, index);
+        const isIdxCheckPass = index <= mergedDisplayCount;
+        // in responsive case, item's `display` can be set to true only if its corresponding width is valid and pass the index check
+        const shouldDisplay = isResponsive
+          ? isIdxCheckPass && getItemWidth(index) > 0
+          : isIdxCheckPass;
 
         return (
           <OverflowContext.Provider
@@ -332,7 +341,7 @@ function Overflow<ItemType = any>(
               item,
               itemKey: key,
               registerSize,
-              display: index <= mergedDisplayCount,
+              display: shouldDisplay,
             }}
           >
             {renderRawItem(item, index)}
@@ -341,6 +350,11 @@ function Overflow<ItemType = any>(
       }
     : (item: ItemType, index: number) => {
         const key = getKey(item, index);
+        const isIdxCheckPass = index <= mergedDisplayCount;
+
+        const shouldDisplay = isResponsive
+          ? isIdxCheckPass && getItemWidth(index) > 0
+          : isIdxCheckPass;
 
         return (
           <Item
@@ -351,7 +365,7 @@ function Overflow<ItemType = any>(
             renderItem={mergedRenderItem}
             itemKey={key}
             registerSize={registerSize}
-            display={index <= mergedDisplayCount}
+            display={shouldDisplay}
           />
         );
       };

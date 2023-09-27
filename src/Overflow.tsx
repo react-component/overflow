@@ -296,8 +296,17 @@ function Overflow<ItemType = any>(
   // ================================ Render ================================
   const displayRest = restReady && !!omittedItems.length;
   const isResponsiveAndFirstRender = isResponsive && containerWidth === null;
+  const responsiveAndFirstRenderStyle: React.CSSProperties = {
+    maxWidth: 0,
+    padding: 0,
+    margin: 0,
+    borderWidth: 0,
+    overflowX: 'hidden',
+  };
 
-  let suffixStyle: React.CSSProperties = {};
+  let suffixStyle: React.CSSProperties = isResponsiveAndFirstRender
+    ? responsiveAndFirstRenderStyle
+    : {};
   if (suffixFixedStart !== null && shouldResponsive) {
     suffixStyle = {
       position: 'absolute',
@@ -312,13 +321,7 @@ function Overflow<ItemType = any>(
     component: itemComponent,
     invalidate,
     style: isResponsiveAndFirstRender
-      ? {
-          maxWidth: 0,
-          padding: 0,
-          margin: 0,
-          borderWidth: 0,
-          'overflow-x': 'hidden',
-        }
+      ? responsiveAndFirstRenderStyle
       : undefined,
   };
 

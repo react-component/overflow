@@ -1,6 +1,85 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Overflow.SSR basic 1`] = `
+exports[`Overflow.SEO invalidate number with suffix 1`] = `
+<div
+  class=""
+>
+  <div
+    class=""
+  >
+    Label 0
+  </div>
+  <div
+    class=""
+  >
+    Label 1
+  </div>
+  <div
+    class=""
+  >
+    Label 2
+  </div>
+  <div
+    class=""
+  >
+    Label 3
+  </div>
+  <div
+    class="rc-overflow-item-suffix"
+  >
+    <span>
+       I am a suffix 
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Overflow.SEO maxCount number with suffix 1`] = `
+<div
+  class="rc-overflow"
+>
+  <div
+    class="rc-overflow-item"
+    style="opacity:1"
+  >
+    Label 0
+  </div>
+  <div
+    class="rc-overflow-item"
+    style="opacity:1"
+  >
+    Label 1
+  </div>
+  <div
+    class="rc-overflow-item"
+    style="opacity:1"
+  >
+    Label 2
+  </div>
+  <div
+    class="rc-overflow-item"
+    style="opacity:1"
+  >
+    Label 3
+  </div>
+  <div
+    class="rc-overflow-item rc-overflow-item-rest"
+    style="opacity:1"
+  >
+    + 2 ...
+  </div>
+  <div
+    class="rc-overflow-item rc-overflow-item-suffix"
+    style="opacity:1"
+  >
+    <span>
+       I am a suffix 
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Overflow.SEO responsive 1`] = `
 <div
   class="rc-overflow"
 >
@@ -26,7 +105,7 @@ exports[`Overflow.SSR basic 1`] = `
 </div>
 `;
 
-exports[`Overflow.SSR with suffix 1`] = `
+exports[`Overflow.SEO responsive with suffix 1`] = `
 <div
   class="rc-overflow"
 >
@@ -54,7 +133,7 @@ exports[`Overflow.SSR with suffix 1`] = `
     style="opacity:1;order:9007199254740991;max-width:0;padding:0;margin:0;border-width:0;overflow-x:hidden"
   >
     <span>
-      I am a suffix
+       I am a suffix 
     </span>
   </div>
 </div>

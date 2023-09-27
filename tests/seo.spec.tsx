@@ -39,4 +39,17 @@ describe('Overflow.SSR', () => {
 
     expect(wrapper).toMatchSnapshot();
   });
+
+  it('with suffix', () => {
+    const wrapper = render(
+      <Overflow<ItemType>
+        data={getData(2)}
+        renderItem={renderItem}
+        maxCount="responsive"
+        suffix={<span>I am a suffix</span>}
+      />,
+    );
+
+    expect(wrapper).toMatchSnapshot();
+  });
 });

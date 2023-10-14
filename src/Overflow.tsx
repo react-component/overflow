@@ -302,7 +302,8 @@ function Overflow<ItemType = any>(
   // ================================ Render ================================
   const displayRest = restReady && !!omittedItems.length;
 
-  const isFullySSRAndFirstRender = fullySSR && containerWidth === null;
+  const isFullySSRResponsiveFirstRender =
+    fullySSR && shouldResponsive && containerWidth === null;
   const fullySSRFirstRenderStyle: React.CSSProperties = {
     maxWidth: 0,
     padding: 0,
@@ -311,7 +312,7 @@ function Overflow<ItemType = any>(
     overflowX: 'hidden',
   };
 
-  let suffixStyle: React.CSSProperties = isFullySSRAndFirstRender
+  let suffixStyle: React.CSSProperties = isFullySSRResponsiveFirstRender
     ? fullySSRFirstRenderStyle
     : {};
   if (suffixFixedStart !== null && shouldResponsive) {
@@ -327,7 +328,9 @@ function Overflow<ItemType = any>(
     responsive: shouldResponsive,
     component: itemComponent,
     invalidate,
-    style: isFullySSRAndFirstRender ? fullySSRFirstRenderStyle : undefined,
+    style: isFullySSRResponsiveFirstRender
+      ? fullySSRFirstRenderStyle
+      : undefined,
   };
 
   // >>>>> Choice render fun by `renderRawItem`
@@ -338,7 +341,7 @@ function Overflow<ItemType = any>(
         // in `ssr="full"` case, item's `display` will be set to `true` when either condition is met:
         // 1) at initial render; 2) its corresponding width is valid and pass the index check
         const shouldDisplay = fullySSR
-          ? isFullySSRAndFirstRender ||
+          ? isFullySSRResponsiveFirstRender ||
             (isIdxCheckPass && getItemWidth(index) > 0)
           : isIdxCheckPass;
         return (
@@ -363,7 +366,7 @@ function Overflow<ItemType = any>(
         // in `ssr="full"` case, item's `display` will be set to `true` when either condition is met:
         // 1) at initial render; 2) its corresponding width is valid and pass the index check
         const shouldDisplay = fullySSR
-          ? isFullySSRAndFirstRender ||
+          ? isFullySSRResponsiveFirstRender ||
             (isIdxCheckPass && getItemWidth(index) > 0)
           : isIdxCheckPass;
         return (

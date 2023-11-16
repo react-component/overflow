@@ -50,6 +50,7 @@
     "rc-util": "^5.37.0"
   },
   "devDependencies": {
+    "@rc-component/father-plugin": "^1.0.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^12.0.0",
     "@types/classnames": "^2.2.9",
@@ -57,7 +58,7 @@
     "@types/jest": "^26.0.23",
     "@types/react": "^16.14.2",
     "@types/react-dom": "^16.9.10",
-    "@umijs/fabric": "^2.0.8",
+    "@umijs/fabric": "^3.0.0",
     "glob": "^10.0.0",
     "cross-env": "^7.0.2",
     "dumi": "^2.0.0",

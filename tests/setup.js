@@ -11,22 +11,20 @@ Enzyme.configure({ adapter: new Adapter() });
 
 Object.assign(Enzyme.ReactWrapper.prototype, {
   triggerResize(clientWidth) {
+    const target = this.find('ResizeObserver').first()
+    target.invoke('onResize')({}, { clientWidth })
     act(() => {
-      this.find('ResizeObserver').first().props().onResize({}, { clientWidth });
       jest.runAllTimers();
-      this.update();
-    });
+    })  
+    this.update()
   },
   triggerItemResize(index, offsetWidth) {
+    const target = this.find('Item').at(index).find('ResizeObserver')
+    target.invoke('onResize')({ offsetWidth });
     act(() => {
-      this.find('Item')
-        .at(index)
-        .find('ResizeObserver')
-        .props()
-        .onResize({ offsetWidth });
       jest.runAllTimers();
-      this.update();
-    });
+    })
+    this.update()
   },
   initSize(width, itemWidth) {
     this.triggerResize(width);

@@ -1,4 +1,5 @@
-import { mount as enzymeMount, ReactWrapper } from 'enzyme';
+import type { ReactWrapper } from 'enzyme';
+import { mount as enzymeMount } from 'enzyme';
 
 export type MountParam = Parameters<typeof enzymeMount>;
 

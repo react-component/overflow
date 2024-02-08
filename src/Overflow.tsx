@@ -357,7 +357,6 @@ function Overflow<ItemType = any>(
       };
 
   // >>>>> Rest node
-  let restNode: React.ReactNode;
   const restContextProps = {
     order: displayRest ? mergedDisplayCount : Number.MAX_SAFE_INTEGER,
     className: `${itemPrefixCls}-rest`,
@@ -365,10 +364,18 @@ function Overflow<ItemType = any>(
     display: displayRest,
   };
 
-  if (!renderRawRest) {
-    const mergedRenderRest = renderRest || defaultRenderRest;
+  const mergedRenderRest = renderRest || defaultRenderRest;
 
-    restNode = (
+    const restNode = renderRawRest ? (
+      <OverflowContext.Provider
+        value={{
+          ...itemSharedProps,
+          ...restContextProps,
+        }}
+      >
+        {renderRawRest(omittedItems)}
+      </OverflowContext.Provider>
+    ) : (
       <Item
         {...itemSharedProps}
         // When not show, order should be the last
@@ -379,20 +386,8 @@ function Overflow<ItemType = any>(
           : mergedRenderRest}
       </Item>
     );
-  } else if (renderRawRest) {
-    restNode = (
-      <OverflowContext.Provider
-        value={{
-          ...itemSharedProps,
-          ...restContextProps,
-        }}
-      >
-        {renderRawRest(omittedItems)}
-      </OverflowContext.Provider>
-    );
-  }
 
-  let overflowNode = (
+  const overflowNode = (
     <Component
       className={classNames(!invalidate && prefixCls, className)}
       style={style}
@@ -422,15 +417,11 @@ function Overflow<ItemType = any>(
     </Component>
   );
 
-  if (isResponsive) {
-    overflowNode = (
-      <ResizeObserver onResize={onOverflowResize} disabled={!shouldResponsive}>
-        {overflowNode}
-      </ResizeObserver>
-    );
-  }
-
-  return overflowNode;
+  return isResponsive ? (
+    <ResizeObserver onResize={onOverflowResize} disabled={!shouldResponsive}>
+      {overflowNode}
+    </ResizeObserver>
+  ) : overflowNode;
 }
 
 const ForwardOverflow = React.forwardRef(Overflow);

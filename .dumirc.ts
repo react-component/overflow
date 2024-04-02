@@ -9,8 +9,8 @@ export default defineConfig({
   },
   exportStatic: {},
   outputPath: 'docs-dist',
-  base: isGitPagesSite ? `/rc-overflow/` : ``,
-  publicPath: isGitPagesSite ? `/rc-overflow/` : ``,
+  base: isGitPagesSite ? `/rc-overflow/` : `/`,
+  publicPath: isGitPagesSite ? `/rc-overflow/` : `/`,
   styles: [
     `
       .markdown table {

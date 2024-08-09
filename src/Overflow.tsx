@@ -1,13 +1,13 @@
-import * as React from 'react';
-import { useState, useMemo, useCallback } from 'react';
 import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
+import * as React from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import Item from './Item';
-import useEffectState, { useBatcher } from './hooks/useEffectState';
 import type { ComponentType } from './RawItem';
 import RawItem from './RawItem';
 import { OverflowContext } from './context';
+import useEffectState, { useBatcher } from './hooks/useEffectState';
 
 const RESPONSIVE = 'responsive' as const;
 const INVALIDATE = 'invalidate' as const;
@@ -16,7 +16,7 @@ export { OverflowContext } from './context';
 
 export type { ComponentType } from './RawItem';
 
-export interface OverflowProps<ItemType> extends React.HTMLAttributes<any> {
+export interface OverflowProps<ItemType> extends Omit<React.HTMLAttributes<any>, 'prefix'> {
   prefixCls?: string;
   className?: string;
   style?: React.CSSProperties;
@@ -33,6 +33,7 @@ export interface OverflowProps<ItemType> extends React.HTMLAttributes<any> {
     | ((omittedItems: ItemType[]) => React.ReactNode);
   /** @private Do not use in your production. Render raw node that need wrap Item by developer self */
   renderRawRest?: (omittedItems: ItemType[]) => React.ReactElement;
+  prefix?: React.ReactNode;
   suffix?: React.ReactNode;
   component?: ComponentType;
   itemComponent?: ComponentType;
@@ -65,6 +66,7 @@ function Overflow<ItemType = any>(
     maxCount,
     renderRest,
     renderRawRest,
+    prefix,
     suffix,
     component: Component = 'div',
     itemComponent,
@@ -92,6 +94,11 @@ function Overflow<ItemType = any>(
     0,
   );
   const [restWidth, setRestWidth] = useEffectState<number>(
+    notifyEffectUpdate,
+    0,
+  );
+
+  const [prefixWidth, setPrefixWidth] = useEffectState<number>(
     notifyEffectUpdate,
     0,
   );
@@ -223,6 +230,10 @@ function Overflow<ItemType = any>(
     setPrevRestWidth(restWidth);
   }
 
+  function registerPrefixSize(_: React.Key, width: number | null) {
+    setPrefixWidth(width!);
+  }
+
   function registerSuffixSize(_: React.Key, width: number | null) {
     setSuffixWidth(width!);
   }
@@ -238,7 +249,7 @@ function Overflow<ItemType = any>(
       typeof mergedRestWidth === 'number' &&
       mergedData
     ) {
-      let totalWidth = suffixWidth;
+      let totalWidth = prefixWidth + suffixWidth;
 
       const len = mergedData.length;
       const lastIndex = len - 1;
@@ -286,7 +297,7 @@ function Overflow<ItemType = any>(
         }
       }
 
-      if (suffix && getItemWidth(0) + suffixWidth > mergedContainerWidth) {
+      if (suffix && getItemWidth(0) + suffixWidth + prefixWidth > mergedContainerWidth) {
         setSuffixFixedStart(null);
       }
     }
@@ -294,6 +305,7 @@ function Overflow<ItemType = any>(
     mergedContainerWidth,
     itemWidths,
     restWidth,
+    prefixWidth,
     suffixWidth,
     getKey,
     mergedData,
@@ -366,26 +378,26 @@ function Overflow<ItemType = any>(
 
   const mergedRenderRest = renderRest || defaultRenderRest;
 
-    const restNode = renderRawRest ? (
-      <OverflowContext.Provider
-        value={{
-          ...itemSharedProps,
-          ...restContextProps,
-        }}
-      >
-        {renderRawRest(omittedItems)}
-      </OverflowContext.Provider>
-    ) : (
-      <Item
-        {...itemSharedProps}
-        // When not show, order should be the last
-        {...restContextProps}
-      >
-        {typeof mergedRenderRest === 'function'
-          ? mergedRenderRest(omittedItems)
-          : mergedRenderRest}
-      </Item>
-    );
+  const restNode = renderRawRest ? (
+    <OverflowContext.Provider
+      value={{
+        ...itemSharedProps,
+        ...restContextProps,
+      }}
+    >
+      {renderRawRest(omittedItems)}
+    </OverflowContext.Provider>
+  ) : (
+    <Item
+      {...itemSharedProps}
+      // When not show, order should be the last
+      {...restContextProps}
+    >
+      {typeof mergedRenderRest === 'function'
+        ? mergedRenderRest(omittedItems)
+        : mergedRenderRest}
+    </Item>
+  );
 
   const overflowNode = (
     <Component
@@ -394,6 +406,20 @@ function Overflow<ItemType = any>(
       ref={ref}
       {...restProps}
     >
+      {/* Prefix Node */}
+      {prefix && (
+        <Item
+          {...itemSharedProps}
+          responsive={isResponsive}
+          responsiveDisabled={!shouldResponsive}
+          order={mergedDisplayCount}
+          className={`${itemPrefixCls}-prefix`}
+          registerSize={registerPrefixSize}
+          display
+        >
+          {prefix}
+        </Item>
+      )}
       {mergedData.map(internalRenderItemNode)}
 
       {/* Rest Count Item */}
@@ -421,7 +447,9 @@ function Overflow<ItemType = any>(
     <ResizeObserver onResize={onOverflowResize} disabled={!shouldResponsive}>
       {overflowNode}
     </ResizeObserver>
-  ) : overflowNode;
+  ) : (
+    overflowNode
+  );
 }
 
 const ForwardOverflow = React.forwardRef(Overflow);

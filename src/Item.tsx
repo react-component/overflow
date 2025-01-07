@@ -11,7 +11,7 @@ export interface ItemProps<ItemType> extends React.HTMLAttributes<any> {
   item?: ItemType;
   className?: string;
   style?: React.CSSProperties;
-  renderItem?: (item: ItemType) => React.ReactNode;
+  renderItem?: (item: ItemType, index: number) => React.ReactNode;
   responsive?: boolean;
   // https://github.com/ant-design/ant-design/issues/35475
   /**
@@ -66,7 +66,7 @@ function InternalItem<ItemType>(
 
   // ================================ Render ================================
   const childNode =
-    renderItem && item !== UNDEFINED ? renderItem(item) : children;
+    renderItem && item !== UNDEFINED ? renderItem(item, order) : children;
 
   let overflowStyle: React.CSSProperties | undefined;
   if (!invalidate) {

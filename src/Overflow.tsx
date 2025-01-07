@@ -1,13 +1,13 @@
-import * as React from 'react';
-import { useState, useMemo, useCallback } from 'react';
 import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
 import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
+import * as React from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import Item from './Item';
-import useEffectState, { useBatcher } from './hooks/useEffectState';
 import type { ComponentType } from './RawItem';
 import RawItem from './RawItem';
 import { OverflowContext } from './context';
+import useEffectState, { useBatcher } from './hooks/useEffectState';
 
 const RESPONSIVE = 'responsive' as const;
 const INVALIDATE = 'invalidate' as const;
@@ -24,7 +24,7 @@ export interface OverflowProps<ItemType> extends React.HTMLAttributes<any> {
   itemKey?: React.Key | ((item: ItemType) => React.Key);
   /** Used for `responsive`. It will limit render node to avoid perf issue */
   itemWidth?: number;
-  renderItem?: (item: ItemType, order: number) => React.ReactNode;
+  renderItem?: (item: ItemType) => React.ReactNode;
   /** @private Do not use in your production. Render raw node that need wrap Item by developer self */
   renderRawItem?: (item: ItemType, index: number) => React.ReactElement;
   maxCount?: number | typeof RESPONSIVE | typeof INVALIDATE;
@@ -347,7 +347,7 @@ function Overflow<ItemType = any>(
             {...itemSharedProps}
             order={index}
             key={key}
-            item={item}
+            item={{ ...item, index }}
             renderItem={mergedRenderItem}
             itemKey={key}
             registerSize={registerSize}

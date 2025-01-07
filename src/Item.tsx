@@ -1,7 +1,6 @@
-import * as React from 'react';
 import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
-import type { ItemWithIndex } from './Overflow';
+import * as React from 'react';
 import type { ComponentType } from './RawItem';
 
 // Use shared variable to save bundle size
@@ -9,10 +8,10 @@ const UNDEFINED = undefined;
 
 export interface ItemProps<ItemType> extends React.HTMLAttributes<any> {
   prefixCls: string;
-  item?: ItemWithIndex<ItemType>;
+  item?: ItemType;
   className?: string;
   style?: React.CSSProperties;
-  renderItem?: (item: ItemWithIndex<ItemType>) => React.ReactNode;
+  renderItem?: (item: ItemType, info: { index: number }) => React.ReactNode;
   responsive?: boolean;
   // https://github.com/ant-design/ant-design/issues/35475
   /**
@@ -67,7 +66,9 @@ function InternalItem<ItemType>(
 
   // ================================ Render ================================
   const childNode =
-    renderItem && item !== UNDEFINED ? renderItem(item) : children;
+    renderItem && item !== UNDEFINED
+      ? renderItem(item, { index: order })
+      : children;
 
   let overflowStyle: React.CSSProperties | undefined;
   if (!invalidate) {

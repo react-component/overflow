@@ -1,6 +1,7 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import ResizeObserver from 'rc-resize-observer';
+import type { ItemWithIndex } from './Overflow';
 import type { ComponentType } from './RawItem';
 
 // Use shared variable to save bundle size
@@ -8,10 +9,10 @@ const UNDEFINED = undefined;
 
 export interface ItemProps<ItemType> extends React.HTMLAttributes<any> {
   prefixCls: string;
-  item?: ItemType;
+  item?: ItemWithIndex<ItemType>;
   className?: string;
   style?: React.CSSProperties;
-  renderItem?: (item: ItemType) => React.ReactNode;
+  renderItem?: (item: ItemWithIndex<ItemType>) => React.ReactNode;
   responsive?: boolean;
   // https://github.com/ant-design/ant-design/issues/35475
   /**

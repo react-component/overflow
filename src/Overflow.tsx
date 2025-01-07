@@ -16,6 +16,8 @@ export { OverflowContext } from './context';
 
 export type { ComponentType } from './RawItem';
 
+export type ItemWithIndex<ItemType> = ItemType & { index?: number };
+
 export interface OverflowProps<ItemType> extends React.HTMLAttributes<any> {
   prefixCls?: string;
   className?: string;
@@ -24,7 +26,7 @@ export interface OverflowProps<ItemType> extends React.HTMLAttributes<any> {
   itemKey?: React.Key | ((item: ItemType) => React.Key);
   /** Used for `responsive`. It will limit render node to avoid perf issue */
   itemWidth?: number;
-  renderItem?: (item: ItemType) => React.ReactNode;
+  renderItem?: (item: ItemWithIndex<ItemType>) => React.ReactNode;
   /** @private Do not use in your production. Render raw node that need wrap Item by developer self */
   renderRawItem?: (item: ItemType, index: number) => React.ReactElement;
   maxCount?: number | typeof RESPONSIVE | typeof INVALIDATE;
@@ -341,13 +343,13 @@ function Overflow<ItemType = any>(
       }
     : (item: ItemType, index: number) => {
         const key = getKey(item, index);
-
+        const propsItem: ItemWithIndex<ItemType> = { ...item, index };
         return (
           <Item
             {...itemSharedProps}
             order={index}
             key={key}
-            item={{ ...item, index }}
+            item={propsItem}
             renderItem={mergedRenderItem}
             itemKey={key}
             registerSize={registerSize}

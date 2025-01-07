@@ -56,8 +56,8 @@ describe('Overflow.Basic', () => {
     const wrapper = mount(
       <Overflow
         data={testData}
-        renderItem={(item, order) => {
-          return `${item.label}-${order}-test`;
+        renderItem={(item) => {
+          return `${item.label}-${item.index}-test`;
         }}
       />,
     );

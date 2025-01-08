@@ -80,6 +80,9 @@
     "react": ">=16.9.0",
     "react-dom": ">=16.9.0"
   },
+  "overrides": {
+    "cheerio":"1.0.0-rc.12"
+  },
   "cnpm": {
     "mode": "npm"
   },

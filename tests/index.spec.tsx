@@ -51,6 +51,22 @@ describe('Overflow.Basic', () => {
     expect(wrapper.find('Item').text()).toEqual('Bamboo Is Light');
   });
 
+  it('renderItem params have "order"', () => {
+    const testData = getData(3);
+    const wrapper = mount(
+      <Overflow
+        data={testData}
+        renderItem={(item, info) => {
+          return `${item.label}-${info.index}-test`;
+        }}
+      />,
+    );
+    const renderedItems = wrapper.find('.rc-overflow-item');
+    expect(renderedItems).toHaveLength(testData.length);
+    renderedItems.forEach((node, index) => {
+      expect(node.text()).toBe(`${testData[index].label}-${index}-test`);
+    });
+  });
   describe('renderRest', () => {
     it('function', () => {
       const wrapper = mount(

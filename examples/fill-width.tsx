@@ -112,6 +112,7 @@ const Demo = () => {
           renderItem={renderItem}
           renderRest={renderRest}
           maxCount={responsive ? 'responsive' : 6}
+          prefix={<span>Foobar</span>}
           suffix={
             <div style={{ position: 'relative', maxWidth: '100%' }}>
               <input

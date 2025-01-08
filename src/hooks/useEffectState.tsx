@@ -46,11 +46,21 @@ export default function useEffectState<T extends string | number | object>(
 ): [T, (value: Updater<T>) => void] {
   // Value
   const [stateValue, setStateValue] = React.useState(defaultValue);
+  const destroyRef = React.useRef(false);
+
+  React.useEffect(
+    () => () => {
+      destroyRef.current = true
+    },
+    [],
+  );
 
   // Set State
   const setEffectVal = useEvent((nextValue: Updater<T>) => {
     notifyEffectUpdate(() => {
-      setStateValue(nextValue);
+      if (!destroyRef.current) {
+        setStateValue(nextValue);
+      }
     });
   });
 

@@ -1,4 +1,4 @@
-import useEvent from 'rc-util/lib/hooks/useEvent';
+import useEvent from '@rc-component/util/lib/hooks/useEvent';
 import * as React from 'react';
 import { unstable_batchedUpdates } from 'react-dom';
 import channelUpdate from './channelUpdate';

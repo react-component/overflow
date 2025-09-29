@@ -1,4 +1,4 @@
-import raf from 'rc-util/lib/raf';
+import raf from '@rc-component/util/lib/raf';
 
 export default function channelUpdate(callback: VoidFunction) {
   if (typeof MessageChannel === 'undefined') {

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useState, useMemo, useCallback } from 'react';
 import classNames from 'classnames';
-import ResizeObserver from 'rc-resize-observer';
-import useLayoutEffect from 'rc-util/lib/hooks/useLayoutEffect';
+import ResizeObserver from '@rc-component/resize-observer';
+import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
 import Item from './Item';
 import useEffectState, { useBatcher } from './hooks/useEffectState';
 import type { ComponentType } from './RawItem';

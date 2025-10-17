@@ -226,6 +226,66 @@ describe('Overflow.Responsive', () => {
     });
   });
 
+  describe('prefix', () => {
+    it('should render prefix when provided', () => {
+      const wrapper = mount(
+        <Overflow<ItemType>
+          data={getData(5)}
+          itemKey="key"
+          renderItem={renderItem}
+          maxCount="responsive"
+          prefix="Label:"
+        />,
+      );
+
+      wrapper.initSize(100, 20);
+
+      // Should render prefix
+      expect(wrapper.findPrefix()).toHaveLength(1);
+      expect(wrapper.findPrefix().text()).toBe('Label:');
+    });
+
+    it('should not render prefix when not provided', () => {
+      const wrapper = mount(
+        <Overflow<ItemType>
+          data={getData(5)}
+          itemKey="key"
+          renderItem={renderItem}
+          maxCount="responsive"
+        />,
+      );
+
+      wrapper.initSize(100, 20);
+
+      expect(wrapper.findPrefix()).toHaveLength(0);
+    });
+
+    it('should show overflow with prefix taking space', () => {
+      const wrapper = mount(
+        <Overflow<ItemType>
+          data={getData(10)}
+          itemKey="key"
+          renderItem={renderItem}
+          maxCount="responsive"
+          prefix="Label:"
+        />,
+      );
+
+      // Very small container to ensure overflow
+      wrapper.initSize(60, 20);
+
+      // Should have prefix
+      expect(wrapper.findPrefix()).toHaveLength(1);
+      
+      // Should show rest due to limited space
+      expect(wrapper.findRest()).toHaveLength(1);
+      
+      // Should show limited number of items
+      expect(wrapper.findItems().length).toBeGreaterThan(0);
+      expect(wrapper.findItems().length).toBeLessThan(10);
+    });
+  });
+
   it('render rest directly', () => {
     const wrapper = mount(
       <Overflow<ItemType>

@@ -9,6 +9,7 @@ export interface WrapperType extends ReactWrapper<any, any> {
   initSize: (width: number, itemWidth: number) => WrapperType;
   findItems: () => WrapperType;
   findRest: () => WrapperType;
+  findPrefix: () => WrapperType;
   findSuffix: () => WrapperType;
 }
 

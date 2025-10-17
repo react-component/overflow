@@ -48,6 +48,8 @@ function renderRest(items: ItemType[]) {
 const Demo = () => {
   const [responsive, setResponsive] = React.useState(true);
   const [data, setData] = React.useState(createData(1));
+  const [showPrefix, setShowPrefix] = React.useState(true);
+  const [showSuffix, setShowSuffix] = React.useState(true);
 
   return (
     <div style={{ padding: 32 }}>
@@ -58,6 +60,26 @@ const Demo = () => {
         }}
       >
         {responsive ? 'Responsive' : 'MaxCount: 6'}
+      </button>
+      
+      <button
+        type="button"
+        onClick={() => {
+          setShowPrefix(!showPrefix);
+        }}
+        style={{ marginLeft: 8 }}
+      >
+        {showPrefix ? 'Hide Prefix' : 'Show Prefix'}
+      </button>
+      
+      <button
+        type="button"
+        onClick={() => {
+          setShowSuffix(!showSuffix);
+        }}
+        style={{ marginLeft: 8 }}
+      >
+        {showSuffix ? 'Hide Suffix' : 'Show Suffix'}
       </button>
       <select
         style={{ width: 200, height: 32 }}
@@ -98,7 +120,30 @@ const Demo = () => {
           renderItem={renderItem}
           renderRest={renderRest}
           maxCount={responsive ? 'responsive' : 6}
-          // suffix={<span>1</span>}
+          prefix={showPrefix ? (
+            <div
+              style={{
+                margin: '0 8px 0 0',
+                padding: '4px 8px',
+                background: 'rgba(0, 255, 0, 0.3)',
+                border: '1px solid green',
+              }}
+            >
+              前缀:
+            </div>
+          ) : undefined}
+          suffix={showSuffix ? (
+            <div
+              style={{
+                margin: '0 0 0 8px',
+                padding: '4px 8px',
+                background: 'rgba(0, 0, 255, 0.3)',
+                border: '1px solid blue',
+              }}
+            >
+              后缀
+            </div>
+          ) : undefined}
         />
       </div>
     </div>

@@ -16,7 +16,7 @@ export { OverflowContext } from './context';
 
 export type { ComponentType } from './RawItem';
 
-export interface OverflowProps<ItemType> extends React.HTMLAttributes<any> {
+export interface OverflowProps<ItemType> extends Omit<React.HTMLAttributes<any>, 'prefix'> {
   prefixCls?: string;
   className?: string;
   style?: React.CSSProperties;
@@ -33,6 +33,7 @@ export interface OverflowProps<ItemType> extends React.HTMLAttributes<any> {
     | ((omittedItems: ItemType[]) => React.ReactNode);
   /** @private Do not use in your production. Render raw node that need wrap Item by developer self */
   renderRawRest?: (omittedItems: ItemType[]) => React.ReactElement;
+  prefix?: React.ReactNode;
   suffix?: React.ReactNode;
   component?: ComponentType;
   itemComponent?: ComponentType;
@@ -65,6 +66,7 @@ function Overflow<ItemType = any>(
     maxCount,
     renderRest,
     renderRawRest,
+    prefix,
     suffix,
     component: Component = 'div',
     itemComponent,
@@ -96,6 +98,10 @@ function Overflow<ItemType = any>(
     0,
   );
 
+  const [prefixWidth, setPrefixWidth] = useEffectState<number>(
+    notifyEffectUpdate,
+    0,
+  );
   const [suffixWidth, setSuffixWidth] = useEffectState<number>(
     notifyEffectUpdate,
     0,
@@ -223,6 +229,10 @@ function Overflow<ItemType = any>(
     setPrevRestWidth(restWidth);
   }
 
+  function registerPrefixSize(_: React.Key, width: number | null) {
+    setPrefixWidth(width!);
+  }
+
   function registerSuffixSize(_: React.Key, width: number | null) {
     setSuffixWidth(width!);
   }
@@ -238,7 +248,7 @@ function Overflow<ItemType = any>(
       typeof mergedRestWidth === 'number' &&
       mergedData
     ) {
-      let totalWidth = suffixWidth;
+      let totalWidth = prefixWidth + suffixWidth;
 
       const len = mergedData.length;
       const lastIndex = len - 1;
@@ -294,6 +304,7 @@ function Overflow<ItemType = any>(
     mergedContainerWidth,
     itemWidths,
     restWidth,
+    prefixWidth,
     suffixWidth,
     getKey,
     mergedData,
@@ -394,6 +405,21 @@ function Overflow<ItemType = any>(
       ref={ref}
       {...restProps}
     >
+      {/* Prefix Node */}
+      {prefix && (
+        <Item
+          {...itemSharedProps}
+          responsive={isResponsive}
+          responsiveDisabled={!shouldResponsive}
+          order={-1}
+          className={`${itemPrefixCls}-prefix`}
+          registerSize={registerPrefixSize}
+          display
+        >
+          {prefix}
+        </Item>
+      )}
+
       {mergedData.map(internalRenderItemNode)}
 
       {/* Rest Count Item */}

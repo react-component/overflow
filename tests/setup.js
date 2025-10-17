@@ -36,11 +36,15 @@ Object.assign(Enzyme.ReactWrapper.prototype, {
     return this.find('Item').filterWhere(
       (item) =>
         item.props().className !== 'rc-overflow-item-rest' &&
+        item.props().className !== 'rc-overflow-item-prefix' &&
         item.props().className !== 'rc-overflow-item-suffix',
     );
   },
   findRest() {
     return this.find('Item.rc-overflow-item-rest');
+  },
+  findPrefix() {
+    return this.find('Item.rc-overflow-item-prefix');
   },
   findSuffix() {
     return this.find('Item.rc-overflow-item-suffix');

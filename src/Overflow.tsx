@@ -16,7 +16,8 @@ export { OverflowContext } from './context';
 
 export type { ComponentType } from './RawItem';
 
-export interface OverflowProps<ItemType> extends Omit<React.HTMLAttributes<any>, 'prefix'> {
+export interface OverflowProps<ItemType>
+  extends Omit<React.HTMLAttributes<any>, 'prefix'> {
   prefixCls?: string;
   className?: string;
   style?: React.CSSProperties;
@@ -377,26 +378,19 @@ function Overflow<ItemType = any>(
 
   const mergedRenderRest = renderRest || defaultRenderRest;
 
-    const restNode = renderRawRest ? (
-      <OverflowContext.Provider
-        value={{
-          ...itemSharedProps,
-          ...restContextProps,
-        }}
-      >
-        {renderRawRest(omittedItems)}
-      </OverflowContext.Provider>
-    ) : (
-      <Item
-        {...itemSharedProps}
-        // When not show, order should be the last
-        {...restContextProps}
-      >
-        {typeof mergedRenderRest === 'function'
-          ? mergedRenderRest(omittedItems)
-          : mergedRenderRest}
-      </Item>
-    );
+  const restNode = renderRawRest ? (
+    <OverflowContext.Provider
+      value={{ ...itemSharedProps, ...restContextProps }}
+    >
+      {renderRawRest(omittedItems)}
+    </OverflowContext.Provider>
+  ) : (
+    <Item {...itemSharedProps} {...restContextProps}>
+      {typeof mergedRenderRest === 'function'
+        ? mergedRenderRest(omittedItems)
+        : mergedRenderRest}
+    </Item>
+  );
 
   const overflowNode = (
     <Component
@@ -447,7 +441,9 @@ function Overflow<ItemType = any>(
     <ResizeObserver onResize={onOverflowResize} disabled={!shouldResponsive}>
       {overflowNode}
     </ResizeObserver>
-  ) : overflowNode;
+  ) : (
+    overflowNode
+  );
 }
 
 const ForwardOverflow = React.forwardRef(Overflow);
@@ -465,11 +461,13 @@ type FilledOverflowType = ForwardOverflowType & {
   INVALIDATE: typeof INVALIDATE;
 };
 
-ForwardOverflow.displayName = 'Overflow';
-
 (ForwardOverflow as unknown as FilledOverflowType).Item = RawItem;
 (ForwardOverflow as unknown as FilledOverflowType).RESPONSIVE = RESPONSIVE;
 (ForwardOverflow as unknown as FilledOverflowType).INVALIDATE = INVALIDATE;
+
+if (process.env.NODE_ENV !== 'production') {
+  ForwardOverflow.displayName = 'Overflow';
+}
 
 // Convert to generic type
 export default ForwardOverflow as unknown as FilledOverflowType;

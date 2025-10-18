@@ -40,6 +40,9 @@ const InternalRawItem = (props: RawItemProps, ref: React.Ref<any>) => {
 };
 
 const RawItem = React.forwardRef(InternalRawItem);
-RawItem.displayName = 'RawItem';
+
+if (process.env.NODE_ENV !== 'production') {
+  RawItem.displayName = 'RawItem';
+}
 
 export default RawItem;

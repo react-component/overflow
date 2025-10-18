@@ -66,7 +66,9 @@ function InternalItem<ItemType>(
 
   // ================================ Render ================================
   const childNode =
-    renderItem && item !== UNDEFINED ? renderItem(item, { index: order }) : children;
+    renderItem && item !== UNDEFINED
+      ? renderItem(item, { index: order })
+      : children;
 
   let overflowStyle: React.CSSProperties | undefined;
   if (!invalidate) {
@@ -117,6 +119,9 @@ function InternalItem<ItemType>(
 }
 
 const Item = React.forwardRef(InternalItem);
-Item.displayName = 'Item';
+
+if (process.env.NODE_ENV !== 'production') {
+  Item.displayName = 'Item';
+}
 
 export default Item;

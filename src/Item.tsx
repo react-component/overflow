@@ -1,6 +1,6 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import ResizeObserver from 'rc-resize-observer';
+import ResizeObserver from '@rc-component/resize-observer';
 import type { ComponentType } from './RawItem';
 
 // Use shared variable to save bundle size

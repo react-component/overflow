@@ -1,4 +1,4 @@
-# rc-overflow 🐾
+# @rc-component/overflow 🐾
 
 [![NPM version][npm-image]][npm-url]
 [![npm download][download-image]][download-url]

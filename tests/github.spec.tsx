@@ -1,9 +1,9 @@
 import React from 'react';
 import { render, act } from '@testing-library/react';
-import { spyElementPrototypes } from 'rc-util/lib/test/domHook';
+import { spyElementPrototypes } from '@rc-component/util/lib/test/domHook';
 import Overflow from '../src';
 
-import { _rs as onResize } from 'rc-resize-observer/lib/utils/observerUtil';
+import { _rs as onResize } from '@rc-component/resize-observer/lib/utils/observerUtil';
 
 interface ItemType {
   label: React.ReactNode;

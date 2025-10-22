@@ -1,5 +1,5 @@
 import React from 'react';
-import useLayoutEffect from "rc-util/lib/hooks/useLayoutEffect";
+import useLayoutEffect from "@rc-component/util/lib/hooks/useLayoutEffect";
 import Overflow from '../src';
 import '../assets/index.less';
 import './common.less';

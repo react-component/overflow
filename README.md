@@ -54,4 +54,4 @@ npm start
 
 ## License
 
-@rc-component/overflowis released under the MIT license.
+@rc-component/overflow is released under the MIT license.

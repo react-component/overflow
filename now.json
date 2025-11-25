@@ -1,11 +1,3 @@
 {
-  "version": 2,
-  "name": "rc-overflow",
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "docs-dist" }
-    }
-  ]
+  "framework": "umijs"
 }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import ResizeObserver from '@rc-component/resize-observer';
 import type { ComponentType } from './RawItem';
 

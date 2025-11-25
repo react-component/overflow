@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useMemo, useCallback } from 'react';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import ResizeObserver from '@rc-component/resize-observer';
 import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
 import Item from './Item';

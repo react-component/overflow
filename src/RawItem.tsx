@@ -1,5 +1,5 @@
 import * as React from 'react';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import Item from './Item';
 import { OverflowContext } from './context';
 

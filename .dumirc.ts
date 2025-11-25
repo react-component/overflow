@@ -8,7 +8,7 @@ export default defineConfig({
     logo: 'https://avatars0.githubusercontent.com/u/9441414?s=200&v=4',
   },
   exportStatic: {},
-  outputPath: 'docs-dist',
+  outputPath: '.doc',
   base: isGitPagesSite ? `/rc-overflow/` : `/`,
   publicPath: isGitPagesSite ? `/rc-overflow/` : `/`,
   styles: [

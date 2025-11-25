@@ -1,6 +1,6 @@
 ---
 hero:
-  title: @rc-component/overflow 
+  title: @rc-component/overflow
   description: React Overflow Component
 ---
 

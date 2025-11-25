@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useMemo, useCallback } from 'react';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import ResizeObserver from '@rc-component/resize-observer';
 import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
 import Item from './Item';
@@ -394,7 +394,7 @@ function Overflow<ItemType = any>(
 
   const overflowNode = (
     <Component
-      className={classNames(!invalidate && prefixCls, className)}
+      className={clsx(!invalidate && prefixCls, className)}
       style={style}
       ref={ref}
       {...restProps}

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import ResizeObserver from '@rc-component/resize-observer';
 import type { ComponentType } from './RawItem';
 
@@ -89,7 +89,7 @@ function InternalItem<ItemType>(
 
   let itemNode = (
     <Component
-      className={classNames(!invalidate && prefixCls, className)}
+      className={clsx(!invalidate && prefixCls, className)}
       style={{
         ...overflowStyle,
         ...style,

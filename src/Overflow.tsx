@@ -314,7 +314,19 @@ function Overflow<ItemType = any>(
   // ================================ Render ================================
   const displayRest = restReady && !!omittedItems.length;
 
-  let suffixStyle: React.CSSProperties = {};
+  const isFullySSRResponsiveFirstRender =
+    fullySSR && shouldResponsive && containerWidth === null;
+  const fullySSRFirstRenderStyle: React.CSSProperties = {
+    maxWidth: 0,
+    padding: 0,
+    margin: 0,
+    borderWidth: 0,
+    overflowX: 'hidden',
+  };
+
+  let suffixStyle: React.CSSProperties = isFullySSRResponsiveFirstRender
+    ? fullySSRFirstRenderStyle
+    : {};
   if (suffixFixedStart !== null && shouldResponsive) {
     suffixStyle = {
       position: 'absolute',
@@ -328,13 +340,22 @@ function Overflow<ItemType = any>(
     responsive: shouldResponsive,
     component: itemComponent,
     invalidate,
+    style: isFullySSRResponsiveFirstRender
+      ? fullySSRFirstRenderStyle
+      : undefined,
   };
 
   // >>>>> Choice render fun by `renderRawItem`
   const internalRenderItemNode = renderRawItem
     ? (item: ItemType, index: number) => {
         const key = getKey(item, index);
-
+        const isIdxCheckPass = index <= mergedDisplayCount;
+        // in `ssr="full"` case, item's `display` will be set to `true` when either condition is met:
+        // 1) at initial render; 2) its corresponding width is valid and pass the index check
+        const shouldDisplay = fullySSR
+          ? isFullySSRResponsiveFirstRender ||
+            (isIdxCheckPass && getItemWidth(index) > 0)
+          : isIdxCheckPass;
         return (
           <OverflowContext.Provider
             key={key}
@@ -344,7 +365,7 @@ function Overflow<ItemType = any>(
               item,
               itemKey: key,
               registerSize,
-              display: index <= mergedDisplayCount,
+              display: shouldDisplay,
             }}
           >
             {renderRawItem(item, index)}
@@ -353,7 +374,13 @@ function Overflow<ItemType = any>(
       }
     : (item: ItemType, index: number) => {
         const key = getKey(item, index);
-
+        const isIdxCheckPass = index <= mergedDisplayCount;
+        // in `ssr="full"` case, item's `display` will be set to `true` when either condition is met:
+        // 1) at initial render; 2) its corresponding width is valid and pass the index check
+        const shouldDisplay = fullySSR
+          ? isFullySSRResponsiveFirstRender ||
+            (isIdxCheckPass && getItemWidth(index) > 0)
+          : isIdxCheckPass;
         return (
           <Item
             {...itemSharedProps}
@@ -363,7 +390,7 @@ function Overflow<ItemType = any>(
             renderItem={mergedRenderItem}
             itemKey={key}
             registerSize={registerSize}
-            display={index <= mergedDisplayCount}
+            display={shouldDisplay}
           />
         );
       };

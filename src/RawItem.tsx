@@ -1,5 +1,5 @@
 import * as React from 'react';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import Item from './Item';
 import { OverflowContext } from './context';
 
@@ -31,7 +31,7 @@ const InternalRawItem = (props: RawItemProps, ref: React.Ref<any>) => {
     <OverflowContext.Provider value={null}>
       <Item
         ref={ref}
-        className={classNames(contextClassName, className)}
+        className={clsx(contextClassName, className)}
         {...restContext}
         {...restProps}
       />

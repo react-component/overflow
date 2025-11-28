@@ -1,35 +1,39 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Overflow.Invalidate render item 1`] = `
-<ul
-  class=""
->
-  <li
+<div>
+  <ul
     class=""
   >
-    Label 0
-  </li>
-  <li
-    class=""
-  >
-    Label 1
-  </li>
-</ul>
+    <li
+      class=""
+    >
+      Label 0
+    </li>
+    <li
+      class=""
+    >
+      Label 1
+    </li>
+  </ul>
+</div>
 `;
 
 exports[`Overflow.Invalidate render raw 1`] = `
-<ul
-  class=""
->
-  <li
+<div>
+  <ul
     class=""
   >
-    Label 0
-  </li>
-  <li
-    class=""
-  >
-    Label 1
-  </li>
-</ul>
+    <li
+      class=""
+    >
+      Label 0
+    </li>
+    <li
+      class=""
+    >
+      Label 1
+    </li>
+  </ul>
+</div>
 `;

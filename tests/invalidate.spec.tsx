@@ -1,6 +1,6 @@
+import { render } from '@testing-library/react';
 import React from 'react';
 import Overflow from '../src';
-import { mount } from './wrapper';
 
 interface ItemType {
   label: React.ReactNode;
@@ -16,7 +16,7 @@ describe('Overflow.Invalidate', () => {
   }
 
   it('render item', () => {
-    const wrapper = mount(
+    const { container } = render(
       <Overflow<ItemType>
         data={getData(2)}
         renderItem={item => {
@@ -29,11 +29,11 @@ describe('Overflow.Invalidate', () => {
       />,
     );
 
-    expect(wrapper.render()).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it('render raw', () => {
-    const wrapper = mount(
+    const { container } = render(
       <Overflow<ItemType>
         data={getData(2)}
         renderRawItem={item => {
@@ -45,6 +45,6 @@ describe('Overflow.Invalidate', () => {
       />,
     );
 
-    expect(wrapper.render()).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 });

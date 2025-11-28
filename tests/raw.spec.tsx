@@ -1,7 +1,6 @@
+import { render } from '@testing-library/react';
 import React from 'react';
 import Overflow from '../src';
-import Item from '../src/Item';
-import { mount } from './wrapper';
 
 interface ItemType {
   label: React.ReactNode;
@@ -19,7 +18,7 @@ describe('Overflow.Raw', () => {
   it('render node directly', () => {
     const elements = new Set<HTMLElement>();
 
-    const wrapper = mount(
+    const { container } = render(
       <Overflow<ItemType>
         data={getData(1)}
         renderRawItem={item => {
@@ -43,15 +42,15 @@ describe('Overflow.Raw', () => {
     expect(elementList).toHaveLength(1);
     expect(elementList[0] instanceof HTMLLIElement).toBeTruthy();
 
-    expect(wrapper.render()).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it('safe with item directly', () => {
-    const wrapper = mount(<Overflow.Item>Bamboo</Overflow.Item>);
+    const { container } = render(<Overflow.Item>Bamboo</Overflow.Item>);
 
-    expect(wrapper.render()).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
 
-    expect(wrapper.exists(Item)).toBeFalsy();
+    expect(container.querySelector('.rc-overflow-item')).toBeFalsy();
   });
 
   it('HOC usage', () => {
@@ -67,7 +66,7 @@ describe('Overflow.Raw', () => {
     const UserHOC = ({ visible, ...props }: SharedProps) =>
       visible ? <ComponentWrapper {...props} /> : null;
 
-    const wrapper = mount(
+    const { container } = render(
       <Overflow
         data={[
           <UserHOC key="light">Light</UserHOC>,
@@ -80,6 +79,6 @@ describe('Overflow.Raw', () => {
       />,
     );
 
-    expect(wrapper.render()).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 });

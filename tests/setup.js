@@ -1,52 +1,67 @@
-const Enzyme = require('enzyme');
-const Adapter = require('enzyme-adapter-react-16');
-const { act } = require('react-dom/test-utils');
+const { render, act } = require('@testing-library/react');
+const { fireEvent } = require('@testing-library/dom');
 require('regenerator-runtime/runtime');
 
+// Mock requestAnimationFrame
 window.requestAnimationFrame = (func) => {
   window.setTimeout(func, 16);
 };
 
-Enzyme.configure({ adapter: new Adapter() });
+// Create a custom render with additional query methods
+const customRender = (ui, options) => {
+  const utils = render(ui, options);
+  
+  return {
+    ...utils,
+    triggerResize(clientWidth) {
+      const resizeObserver = utils.container.querySelector('[data-resize-observer]');
+      act(() => {
+        fireEvent(resizeObserver, new Event('resize', {
+          detail: { clientWidth }
+        }));
+        jest.runAllTimers();
+      });
+    },
+    triggerItemResize(index, offsetWidth) {
+      const items = utils.getAllByTestId('overflow-item');
+      const target = items[index];
+      act(() => {
+        fireEvent(target, new Event('resize', {
+          detail: { offsetWidth }
+        }));
+        jest.runAllTimers();
+      });
+    },
+    initSize(width, itemWidth) {
+      this.triggerResize(width);
+      const items = utils.getAllByTestId('overflow-item');
+      items.forEach((_, index) => {
+        this.triggerItemResize(index, itemWidth);
+      });
+    },
+    findItems() {
+      return utils.getAllByTestId('overflow-item').filter(item => 
+        !item.classList.contains('rc-overflow-item-rest') &&
+        !item.classList.contains('rc-overflow-item-prefix') &&
+        !item.classList.contains('rc-overflow-item-suffix')
+      );
+    },
+    findRest() {
+      return utils.getByTestId('overflow-item-rest');
+    },
+    findPrefix() {
+      return utils.getByTestId('overflow-item-prefix');
+    },
+    findSuffix() {
+      return utils.getByTestId('overflow-item-suffix');
+    }
+  };
+};
 
-Object.assign(Enzyme.ReactWrapper.prototype, {
-  triggerResize(clientWidth) {
-    const target = this.find('ResizeObserver').first()
-    target.invoke('onResize')({}, { clientWidth })
-    act(() => {
-      jest.runAllTimers();
-    })  
-    this.update()
-  },
-  triggerItemResize(index, offsetWidth) {
-    const target = this.find('Item').at(index).find('ResizeObserver')
-    target.invoke('onResize')({ offsetWidth });
-    act(() => {
-      jest.runAllTimers();
-    })
-    this.update()
-  },
-  initSize(width, itemWidth) {
-    this.triggerResize(width);
-    this.find('Item').forEach((_, index) => {
-      this.triggerItemResize(index, itemWidth);
-    });
-  },
-  findItems() {
-    return this.find('Item').filterWhere(
-      (item) =>
-        item.props().className !== 'rc-overflow-item-rest' &&
-        item.props().className !== 'rc-overflow-item-prefix' &&
-        item.props().className !== 'rc-overflow-item-suffix',
-    );
-  },
-  findRest() {
-    return this.find('Item.rc-overflow-item-rest');
-  },
-  findPrefix() {
-    return this.find('Item.rc-overflow-item-prefix');
-  },
-  findSuffix() {
-    return this.find('Item.rc-overflow-item-suffix');
-  },
-});
+// Re-export everything
+module.exports = {
+  ...require('@testing-library/react'),
+  render: customRender,
+  act,
+  fireEvent
+};

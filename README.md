@@ -28,7 +28,7 @@ Auto collapse box when overflow
 
 ## Live Demo
 
-https://overflow-react-component.vercel.app/
+https://overflow-react-component.vercel.app
 
 ## Install
 

@@ -318,8 +318,8 @@ function Overflow<ItemType = any>(
   if (suffixFixedStart !== null && shouldResponsive) {
     suffixStyle = {
       position: 'absolute',
-      left: suffixFixedStart,
       top: 0,
+      insetInlineStart: suffixFixedStart,
     };
   }
 

@@ -186,7 +186,11 @@ describe('Overflow.Responsive', () => {
       wrapper.initSize(100, 20);
 
       expect(wrapper.findSuffix().props().style).toEqual(
-        expect.objectContaining({ position: 'absolute', top: 0, left: 80 }),
+        expect.objectContaining({
+          position: 'absolute',
+          top: 0,
+          insetInlineStart: 80,
+        }),
       );
     });
 

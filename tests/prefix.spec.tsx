@@ -1,4 +1,5 @@
 import React from 'react';
+import { act } from '@testing-library/react';
 import { mount } from './wrapper';
 import Overflow from '../src';
 
@@ -24,7 +25,9 @@ describe('Overflow.Prefix', () => {
   });
 
   afterEach(() => {
-    jest.runAllTimers();
+    act(() => {
+      jest.runAllTimers();
+    });
     jest.useRealTimers();
   });
 
@@ -54,7 +57,7 @@ describe('Overflow.Prefix', () => {
     expect(wrapper.findPrefix()).toHaveLength(0);
   });
 
-  it('should work with responsive mode and show overflow', () => {
+  it('should work with responsive mode and show overflow', async () => {
     const wrapper = mount(
       <Overflow<ItemType>
         data={getData(10)}
@@ -66,15 +69,15 @@ describe('Overflow.Prefix', () => {
     );
 
     // Small container to force overflow
-    wrapper.initSize(60, 20);
+    await wrapper.initSize(60, 20);
 
     // Should render prefix
     expect(wrapper.findPrefix()).toHaveLength(1);
     expect(wrapper.findPrefix().text()).toBe('Label:');
-    
+
     // Should show overflow indicator
     expect(wrapper.findRest()).toHaveLength(1);
-    
+
     // Should render some but not all items
     expect(wrapper.findItems().length).toBeGreaterThan(0);
     expect(wrapper.findItems().length).toBeLessThan(10);
@@ -94,7 +97,7 @@ describe('Overflow.Prefix', () => {
     // Should render prefix
     expect(wrapper.findPrefix()).toHaveLength(1);
     expect(wrapper.findPrefix().text()).toBe('Categories:');
-    
+
     // Should show exactly 3 items + rest
     expect(wrapper.findItems()).toHaveLength(3);
     expect(wrapper.findRest()).toHaveLength(1);
@@ -117,7 +120,7 @@ describe('Overflow.Prefix', () => {
     expect(wrapper.findSuffix()).toHaveLength(1);
     expect(wrapper.findPrefix().text()).toBe('Start');
     expect(wrapper.findSuffix().text()).toBe('End');
-    
+
     // Should show 3 items + rest
     expect(wrapper.findItems()).toHaveLength(3);
     expect(wrapper.findRest()).toHaveLength(1);

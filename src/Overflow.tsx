@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState, useMemo, useCallback } from 'react';
 import { clsx } from 'clsx';
 import ResizeObserver from '@rc-component/resize-observer';
-import useLayoutEffect from '@rc-component/util/lib/hooks/useLayoutEffect';
+import { useLayoutEffect } from '@rc-component/util';
 import Item from './Item';
 import useEffectState, { useBatcher } from './hooks/useEffectState';
 import type { ComponentType } from './RawItem';
@@ -175,7 +175,8 @@ function Overflow<ItemType = any>(
   );
 
   const mergedRenderItem = useCallback(
-    renderItem || ((item: ItemType) => item),
+    (item: ItemType, info: { index: number }) =>
+      renderItem ? renderItem(item, info) : (item as React.ReactNode),
     [renderItem],
   );
 
@@ -461,13 +462,13 @@ type FilledOverflowType = ForwardOverflowType & {
   INVALIDATE: typeof INVALIDATE;
 };
 
-(ForwardOverflow as unknown as FilledOverflowType).Item = RawItem;
-(ForwardOverflow as unknown as FilledOverflowType).RESPONSIVE = RESPONSIVE;
-(ForwardOverflow as unknown as FilledOverflowType).INVALIDATE = INVALIDATE;
+((ForwardOverflow as unknown) as FilledOverflowType).Item = RawItem;
+((ForwardOverflow as unknown) as FilledOverflowType).RESPONSIVE = RESPONSIVE;
+((ForwardOverflow as unknown) as FilledOverflowType).INVALIDATE = INVALIDATE;
 
 if (process.env.NODE_ENV !== 'production') {
   ForwardOverflow.displayName = 'Overflow';
 }
 
 // Convert to generic type
-export default ForwardOverflow as unknown as FilledOverflowType;
+export default (ForwardOverflow as unknown) as FilledOverflowType;

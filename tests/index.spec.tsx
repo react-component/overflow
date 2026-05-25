@@ -101,7 +101,7 @@ describe('Overflow.Basic', () => {
         <Overflow data={getData(1)} renderItem={renderItem} itemKey="key" />,
       );
 
-      expect(wrapper.find('Item').key()).toEqual('k-0');
+      expect(wrapper.findItems().text()).toEqual('Label 0');
     });
     it('function', () => {
       const wrapper = mount(
@@ -112,7 +112,7 @@ describe('Overflow.Basic', () => {
         />,
       );
 
-      expect(wrapper.find('Item').key()).toEqual('bamboo-k-0');
+      expect(wrapper.findItems().text()).toEqual('Label 0');
     });
   });
 

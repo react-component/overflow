@@ -169,7 +169,7 @@ function Overflow<ItemType = any>(
       if (typeof itemKey === 'function') {
         return itemKey(item);
       }
-      return (itemKey && (item as any)?.[itemKey]) ?? index;
+      return (itemKey && (item as any)?.[itemKey as keyof any]) ?? index;
     },
     [itemKey],
   );

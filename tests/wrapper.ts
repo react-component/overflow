@@ -224,8 +224,9 @@ export function mount(element: React.ReactElement) {
     async initSize(width: number, itemWidth: number) {
       await wrapper.triggerResize(width);
 
-      for (let index = 0; index < queryOverflowItems().length; index += 1) {
-        await triggerElementResize(queryOverflowItems()[index], itemWidth);
+      const overflowItems = queryOverflowItems();
+      for (let index = 0; index < overflowItems.length; index += 1) {
+        await triggerElementResize(overflowItems[index], itemWidth);
       }
 
       return wrapper;

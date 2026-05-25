@@ -102,9 +102,7 @@ describe('Overflow.github', () => {
       jest.runAllTimers();
     });
 
-    (expect(
-      container.querySelector('.rc-overflow-item-rest'),
-    ) as any).toHaveStyle({
+    expect(container.querySelector('.rc-overflow-item-rest')!).toHaveStyle({
       opacity: 1,
     });
   });

@@ -1,9 +1,11 @@
+import './setup';
 import React from 'react';
+import '@testing-library/jest-dom';
 import { render, act } from '@testing-library/react';
-import { spyElementPrototypes } from '@rc-component/util/lib/test/domHook';
+import { spyElementPrototypes } from '@rc-component/util';
 import Overflow from '../src';
 
-import { _rs as onResize } from '@rc-component/resize-observer/lib/utils/observerUtil';
+import { _rs as onResize } from '@rc-component/resize-observer';
 
 interface ItemType {
   label: React.ReactNode;
@@ -100,7 +102,7 @@ describe('Overflow.github', () => {
       jest.runAllTimers();
     });
 
-    expect(container.querySelector('.rc-overflow-item-rest')).toHaveStyle({
+    expect(container.querySelector('.rc-overflow-item-rest')!).toHaveStyle({
       opacity: 1,
     });
   });

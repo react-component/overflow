@@ -1,5 +1,5 @@
 import React from 'react';
-import { act } from 'react-dom/test-utils';
+import { act } from '@testing-library/react';
 import Overflow from '../src';
 import { mount } from './wrapper';
 
@@ -28,7 +28,7 @@ describe('Overflow.Responsive', () => {
     jest.useRealTimers();
   });
 
-  it('basic', () => {
+  it('basic', async () => {
     const wrapper = mount(
       <Overflow<ItemType>
         data={getData(6)}
@@ -37,7 +37,7 @@ describe('Overflow.Responsive', () => {
       />,
     );
 
-    wrapper.initSize(100, 20); // [0][1][2][3][4][+2](5)(6)
+    await wrapper.initSize(100, 20); // [0][1][2][3][4][+2](5)(6)
     expect(wrapper.findItems()).toHaveLength(6);
     [true, true, true, true, false, false].forEach((display, i) => {
       expect(wrapper.findItems().at(i).props().display).toBe(display);
@@ -49,7 +49,7 @@ describe('Overflow.Responsive', () => {
     ).toBeTruthy();
   });
 
-  it('only one', () => {
+  it('only one', async () => {
     const wrapper = mount(
       <Overflow<ItemType>
         data={getData(1)}
@@ -58,13 +58,13 @@ describe('Overflow.Responsive', () => {
         maxCount="responsive"
       />,
     );
-    wrapper.initSize(100, 20);
+    await wrapper.initSize(100, 20);
 
     expect(wrapper.findItems()).toHaveLength(1);
     expect(wrapper.findRest().props().display).toBeFalsy();
   });
 
-  it('just fit', () => {
+  it('just fit', async () => {
     const wrapper = mount(
       <Overflow<ItemType>
         data={getData(1)}
@@ -73,13 +73,13 @@ describe('Overflow.Responsive', () => {
         maxCount="responsive"
       />,
     );
-    wrapper.initSize(20, 20);
+    await wrapper.initSize(20, 20);
 
     expect(wrapper.findItems()).toHaveLength(1);
     expect(wrapper.findRest().props().display).toBeFalsy();
   });
 
-  it('remove to clean up', () => {
+  it('remove to clean up', async () => {
     const data = getData(6);
 
     const wrapper = mount(
@@ -90,7 +90,7 @@ describe('Overflow.Responsive', () => {
         maxCount="responsive"
       />,
     );
-    wrapper.initSize(100, 20);
+    await wrapper.initSize(100, 20);
 
     // Remove one (Just fit the container width)
     const newData = [...data];
@@ -115,7 +115,7 @@ describe('Overflow.Responsive', () => {
     expect(wrapper.findRest().props().display).toBeFalsy();
   });
 
-  it('none to overflow', () => {
+  it('none to overflow', async () => {
     const data = getData(5);
 
     const wrapper = mount(
@@ -127,7 +127,7 @@ describe('Overflow.Responsive', () => {
       />,
     );
 
-    wrapper.initSize(100, 20);
+    await wrapper.initSize(100, 20);
     expect(wrapper.findItems()).toHaveLength(5);
     expect(wrapper.findRest().props().display).toBeFalsy();
 
@@ -147,12 +147,12 @@ describe('Overflow.Responsive', () => {
     expect(wrapper.findRest().props().display).toBeFalsy();
 
     // Trigger resize, node ready
-    wrapper.triggerItemResize(0, 20);
+    await wrapper.triggerItemResize(0, 20);
     expect(wrapper.findItems()).toHaveLength(6);
     expect(wrapper.findRest().props().display).toBeTruthy();
   });
 
-  it('unmount no error', () => {
+  it('unmount no error', async () => {
     const wrapper = mount(
       <Overflow<ItemType>
         data={getData(1)}
@@ -162,7 +162,7 @@ describe('Overflow.Responsive', () => {
       />,
     );
 
-    wrapper.initSize(100, 20);
+    await wrapper.initSize(100, 20);
 
     wrapper.unmount();
 
@@ -172,7 +172,7 @@ describe('Overflow.Responsive', () => {
   });
 
   describe('suffix', () => {
-    it('ping the position', () => {
+    it('ping the position', async () => {
       const wrapper = mount(
         <Overflow<ItemType>
           data={getData(10)}
@@ -183,7 +183,7 @@ describe('Overflow.Responsive', () => {
         />,
       );
 
-      wrapper.initSize(100, 20);
+      await wrapper.initSize(100, 20);
 
       expect(wrapper.findSuffix().props().style).toEqual(
         expect.objectContaining({
@@ -194,7 +194,7 @@ describe('Overflow.Responsive', () => {
       );
     });
 
-    it('too long to pin', () => {
+    it('too long to pin', async () => {
       const wrapper = mount(
         <Overflow<ItemType>
           data={getData(1)}
@@ -205,13 +205,13 @@ describe('Overflow.Responsive', () => {
         />,
       );
 
-      wrapper.initSize(100, 20);
-      wrapper.triggerItemResize(0, 90);
+      await wrapper.initSize(100, 20);
+      await wrapper.triggerItemResize(0, 90);
 
       expect(wrapper.findSuffix().props().style.position).toBeFalsy();
     });
 
-    it('long to short should keep correct position', () => {
+    it('long to short should keep correct position', async () => {
       const wrapper = mount(
         <Overflow<ItemType>
           data={getData(3)}
@@ -222,7 +222,7 @@ describe('Overflow.Responsive', () => {
         />,
       );
 
-      wrapper.initSize(20, 20);
+      await wrapper.initSize(20, 20);
       wrapper.setProps({ data: [] });
 
       expect(wrapper.findRest()).toHaveLength(0);
@@ -231,7 +231,7 @@ describe('Overflow.Responsive', () => {
   });
 
   describe('prefix', () => {
-    it('should render prefix when provided', () => {
+    it('should render prefix when provided', async () => {
       const wrapper = mount(
         <Overflow<ItemType>
           data={getData(5)}
@@ -242,14 +242,14 @@ describe('Overflow.Responsive', () => {
         />,
       );
 
-      wrapper.initSize(100, 20);
+      await wrapper.initSize(100, 20);
 
       // Should render prefix
       expect(wrapper.findPrefix()).toHaveLength(1);
       expect(wrapper.findPrefix().text()).toBe('Label:');
     });
 
-    it('should not render prefix when not provided', () => {
+    it('should not render prefix when not provided', async () => {
       const wrapper = mount(
         <Overflow<ItemType>
           data={getData(5)}
@@ -259,12 +259,12 @@ describe('Overflow.Responsive', () => {
         />,
       );
 
-      wrapper.initSize(100, 20);
+      await wrapper.initSize(100, 20);
 
       expect(wrapper.findPrefix()).toHaveLength(0);
     });
 
-    it('should show overflow with prefix taking space', () => {
+    it('should show overflow with prefix taking space', async () => {
       const wrapper = mount(
         <Overflow<ItemType>
           data={getData(10)}
@@ -276,21 +276,21 @@ describe('Overflow.Responsive', () => {
       );
 
       // Very small container to ensure overflow
-      wrapper.initSize(60, 20);
+      await wrapper.initSize(60, 20);
 
       // Should have prefix
       expect(wrapper.findPrefix()).toHaveLength(1);
-      
+
       // Should show rest due to limited space
       expect(wrapper.findRest()).toHaveLength(1);
-      
+
       // Should show limited number of items
       expect(wrapper.findItems().length).toBeGreaterThan(0);
       expect(wrapper.findItems().length).toBeLessThan(10);
     });
   });
 
-  it('render rest directly', () => {
+  it('render rest directly', async () => {
     const wrapper = mount(
       <Overflow<ItemType>
         data={getData(10)}
@@ -307,7 +307,7 @@ describe('Overflow.Responsive', () => {
       />,
     );
 
-    wrapper.initSize(100, 20);
+    await wrapper.initSize(100, 20);
 
     expect(wrapper.find('span.custom-rest').text()).toEqual('6');
   });

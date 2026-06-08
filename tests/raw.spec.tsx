@@ -1,6 +1,5 @@
 import React from 'react';
 import Overflow from '../src';
-import Item from '../src/Item';
 import { mount } from './wrapper';
 
 interface ItemType {
@@ -51,7 +50,7 @@ describe('Overflow.Raw', () => {
 
     expect(wrapper.render()).toMatchSnapshot();
 
-    expect(wrapper.exists(Item)).toBeFalsy();
+    expect(wrapper.findItems()).toHaveLength(0);
   });
 
   it('HOC usage', () => {

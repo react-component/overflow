@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from 'enzyme';
+import { renderToStaticMarkup } from 'react-dom/server';
 import Overflow from '../src';
 
 interface ItemType {
@@ -28,7 +28,8 @@ describe('Overflow.SSR', () => {
   });
 
   it('basic', () => {
-    const wrapper = render(
+    const container = document.createElement('div');
+    container.innerHTML = renderToStaticMarkup(
       <Overflow<ItemType>
         data={getData(2)}
         renderItem={renderItem}
@@ -37,6 +38,6 @@ describe('Overflow.SSR', () => {
       />,
     );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(container.firstChild).toMatchSnapshot();
   });
 });

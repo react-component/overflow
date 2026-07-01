@@ -28,6 +28,10 @@ jobs:
           else
             echo "enabled=false" >> "$GITHUB_OUTPUT"
           fi
+      - name: Setup utoo
+        if: ${{ steps.surge-token.outputs.enabled == 'true' }}
+        uses: utooland/setup-utoo@v1
+
       - name: Build preview
         if: ${{ steps.surge-token.outputs.enabled == 'true' }}
         run: |

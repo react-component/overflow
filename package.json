@@ -42,7 +42,7 @@
     "lint": "eslint src/ --ext .tsx,.ts",
     "lint:tsc": "tsc -p tsconfig.json --noEmit",
     "build": "dumi build",
-    "tsc": "tsc -p tsconfig.json --noEmit"
+    "tsc": "npm run lint:tsc"
   },
   "dependencies": {
     "@babel/runtime": "^7.11.1",

@@ -13,5 +13,6 @@
       "rc-overflow": ["src/index.tsx"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", ".dumirc.ts"]
+  "include": ["**/*.ts", "**/*.tsx", ".dumirc.ts"],
+  "exclude": ["node_modules", "es", "lib", "dist", "docs-dist", ".doc", ".dumi/tmp", "coverage"]
 }

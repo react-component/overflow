@@ -13,7 +13,7 @@
   </p>
 </div>
 
-<p align="center">简体中文 | [English](./README.md)</p>
+<p align="center">简体中文 | <a href="./README.md">English</a></p>
 
 ## 亮点
 
@@ -54,7 +54,7 @@ export default () => (
 ## 本地开发
 
 ```bash
-npm install
+ut install
 npm start
 npm test
 npm run lint

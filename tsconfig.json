@@ -12,5 +12,6 @@
       "@@/*": [".dumi/tmp/*"],
       "rc-overflow": ["src/index.tsx"]
     }
-  }
+  },
+  "include": ["**/*.ts", "**/*.tsx", ".dumirc.ts"]
 }

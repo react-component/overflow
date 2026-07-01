@@ -124,7 +124,7 @@ class NodeCollection {
   }
 }
 
-export function mount(element: React.ReactElement) {
+export function mount(element: React.ReactElement): any {
   let mergedElement = element;
   const result = render(mergedElement);
 

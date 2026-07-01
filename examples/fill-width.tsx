@@ -61,8 +61,8 @@ const Demo = () => {
   const [inputValue, setInputValue] = React.useState('');
   const [inputWidth, setInputWidth] = React.useState(0);
   const [data, setData] = React.useState(createData(3));
-  const inputRef = React.useRef<HTMLInputElement>();
-  const measureRef = React.useRef<HTMLDivElement>();
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const measureRef = React.useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     setInputWidth(measureRef.current.offsetWidth);

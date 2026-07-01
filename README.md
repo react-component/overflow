@@ -54,7 +54,7 @@ export default () => (
 ## Development
 
 ```bash
-ut install
+npm install
 npm start
 npm test
 npm run lint

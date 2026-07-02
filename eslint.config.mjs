@@ -1,42 +1,23 @@
-import { FlatCompat } from '@eslint/eslintrc';
 import js from '@eslint/js';
-import tsEslintPlugin from '@typescript-eslint/eslint-plugin';
-import { createRequire } from 'node:module';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { defineConfig } from 'eslint/config';
+import prettier from 'eslint-config-prettier';
+import jest from 'eslint-plugin-jest';
+import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const require = createRequire(import.meta.url);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
-
-const supportedTsRules = new Set(
-  Object.keys(tsEslintPlugin.rules).map(ruleName => `@typescript-eslint/${ruleName}`),
-);
-
-function normalizeConfig(config) {
-  const next = { ...config };
-
-  if (next.rules) {
-    next.rules = Object.fromEntries(
-      Object.entries(next.rules).filter(([ruleName]) => {
-        if (ruleName.startsWith('@babel/')) {
-          return false;
-        }
-        return !ruleName.startsWith('@typescript-eslint/') || supportedTsRules.has(ruleName);
-      }),
-    );
-  }
-
-  return next;
-}
-
-export default [
+export default defineConfig([
+  {
+    plugins: {
+      '@typescript-eslint': tseslint.plugin,
+    },
+  },
+  {
+    linterOptions: {
+      reportUnusedDisableDirectives: 'off',
+    },
+  },
   {
     ignores: [
       'node_modules/',
@@ -48,17 +29,83 @@ export default [
       '.dumi/',
       '.doc/',
       '.vercel/',
-      '.eslintrc.js',
+      'src/index.d.ts',
     ],
   },
-  ...compat.config(require('./.eslintrc.js')).map(normalizeConfig),
   {
+    files: ['**/*.{js,jsx,ts,tsx}'],
+    extends: [
+      js.configs.recommended,
+      react.configs.flat.recommended,
+      react.configs.flat['jsx-runtime'],
+      prettier,
+    ],
+    plugins: {
+      'react-hooks': reactHooks,
+    },
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
     rules: {
-      '@typescript-eslint/no-empty-object-type': 'off',
-      '@typescript-eslint/no-unsafe-function-type': 'off',
-      '@typescript-eslint/no-unused-vars': 'off',
-      '@typescript-eslint/no-useless-constructor': 'off',
-      '@typescript-eslint/consistent-indexed-object-style': 'off',
+      'no-async-promise-executor': 'off',
+      'no-empty-pattern': 'off',
+      'no-irregular-whitespace': 'off',
+      'no-prototype-builtins': 'off',
+      'no-useless-escape': 'off',
+      'no-extra-boolean-cast': 'off',
+      'no-undef': 'off',
+      'no-unused-vars': 'off',
+      'react/no-find-dom-node': 'off',
+      'react/display-name': 'off',
+      'react/no-unknown-property': 'off',
+      'react/prop-types': 'off',
+      'react-hooks/exhaustive-deps': 'warn',
+      'react-hooks/rules-of-hooks': 'error',
     },
   },
-];
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [...tseslint.configs.recommended],
+    rules: {
+      '@typescript-eslint/ban-ts-comment': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unsafe-function-type': 'off',
+      '@typescript-eslint/no-unnecessary-type-constraint': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+    },
+  },
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+  {
+    files: ['tests/**/*.{js,jsx,ts,tsx}', '**/*.{test,spec}.{js,jsx,ts,tsx}'],
+    extends: [jest.configs['flat/recommended']],
+    rules: {
+      'jest/no-disabled-tests': 'off',
+      'jest/no-done-callback': 'off',
+      'jest/no-identical-title': 'off',
+      'jest/expect-expect': 'off',
+      'jest/no-alias-methods': 'off',
+      'jest/no-conditional-expect': 'off',
+      'jest/no-export': 'off',
+      'jest/no-standalone-expect': 'off',
+      'jest/valid-expect': 'off',
+      'jest/valid-title': 'off',
+    },
+  },
+]);

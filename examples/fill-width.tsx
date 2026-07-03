@@ -65,11 +65,13 @@ const Demo = () => {
   const measureRef = React.useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
-    setInputWidth(measureRef.current.offsetWidth);
+    if (measureRef.current) {
+      setInputWidth(measureRef.current.offsetWidth);
+    }
   }, [inputValue]);
 
   React.useEffect(() => {
-    inputRef.current.focus();
+    inputRef.current?.focus();
   }, []);
 
   return (

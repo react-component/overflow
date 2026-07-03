@@ -124,7 +124,24 @@ class NodeCollection {
   }
 }
 
-export function mount(element: React.ReactElement) {
+interface MountWrapper extends ReturnType<typeof render> {
+  find: (selector: string) => NodeCollection;
+  findItems: () => NodeCollection;
+  findRest: () => NodeCollection;
+  findPrefix: () => NodeCollection;
+  findSuffix: () => NodeCollection;
+  triggerResize: (clientWidth: number) => Promise<MountWrapper>;
+  triggerItemResize: (
+    index: number,
+    offsetWidth: number,
+  ) => Promise<MountWrapper>;
+  initSize: (width: number, itemWidth: number) => Promise<MountWrapper>;
+  setProps: (props: Record<string, any>) => MountWrapper;
+  update: () => MountWrapper;
+  render: () => ChildNode | null;
+}
+
+export function mount(element: React.ReactElement): MountWrapper {
   let mergedElement = element;
   const result = render(mergedElement);
 
@@ -154,7 +171,7 @@ export function mount(element: React.ReactElement) {
     await flushResize();
   };
 
-  const wrapper = {
+  const wrapper: MountWrapper = {
     ...result,
     find(selector: string) {
       if (selector === 'ResizeObserver') {

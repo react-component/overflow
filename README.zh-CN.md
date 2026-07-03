@@ -1,7 +1,7 @@
 <div align="center">
   <h1>@rc-component/overflow</h1>
-  <p><sub><a href="https://ant.design"><img alt="Ant Design" height="14" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" style="vertical-align: -0.125em;" /></a> Part of the Ant Design ecosystem.</sub></p>
-  <p>📦 Auto-collapse React layout primitive for rendering visible items and overflow indicators.</p>
+  <p><sub><a href="https://ant.design"><img alt="Ant Design" height="14" src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" style="vertical-align: -0.125em;" /></a> Ant Design 生态的一部分。</sub></p>
+  <p>📦 用于自动折叠可见项与溢出项的 React 布局基础组件。</p>
 
   <p>
     <a href="https://npmjs.org/package/@rc-component/overflow"><img alt="NPM version" src="https://img.shields.io/npm/v/@rc-component/overflow.svg?style=flat-square"></a>
@@ -13,23 +13,23 @@
   </p>
 </div>
 
-<p align="center">English | <a href="./README.zh-CN.md">简体中文</a></p>
+<p align="center"><a href="./README.md">English</a> | 简体中文</p>
 
-## Highlights
+## 亮点
 
-| Area    | Support                                                                                   |
-| ------- | ----------------------------------------------------------------------------------------- |
-| Purpose | Auto-collapse React layout primitive for rendering visible items and overflow indicators. |
-| Package | `@rc-component/overflow`                                                                  |
-| Release | `@rc-component/np` / `rc-np`                                                              |
+| 方向 | 支持                                              |
+| ---- | ------------------------------------------------- |
+| 定位 | 用于自动折叠可见项与溢出项的 React 布局基础组件。 |
+| 包名 | `@rc-component/overflow`                          |
+| 发布 | `@rc-component/np` / `rc-np`                      |
 
-## Install
+## 安装
 
 ```bash
 npm install @rc-component/overflow
 ```
 
-## Usage
+## 用法
 
 ```tsx | pure
 import Overflow from '@rc-component/overflow';
@@ -45,13 +45,13 @@ export default () => (
 
 ## API
 
-| Prop         | Description                      |
-| ------------ | -------------------------------- |
-| `data`       | Items rendered by Overflow.      |
-| `renderItem` | Render a visible item.           |
-| `renderRest` | Render collapsed overflow items. |
+| 名称         | 说明                    |
+| ------------ | ----------------------- |
+| `data`       | Overflow 渲染的数据项。 |
+| `renderItem` | 渲染可见项。            |
+| `renderRest` | 渲染折叠后的溢出项。    |
 
-## Development
+## 本地开发
 
 ```bash
 npm install
@@ -62,16 +62,16 @@ npm run tsc
 npm run compile
 ```
 
-The dumi site runs at `http://localhost:8000`.
+本地 dumi 站点默认运行在 `http://localhost:8000`.
 
-## Release
+## 发布
 
 ```bash
 npm run prepublishOnly
 ```
 
-The release flow is handled by `@rc-component/np` through the `rc-np` command when the package uses the shared release flow.
+发布流程通过 `@rc-component/np` 提供的 `rc-np` 命令处理。
 
-## License
+## 许可证
 
-@rc-component/overflow is released under the [MIT](./LICENSE.md) license.
+@rc-component/overflow 基于 [MIT](./LICENSE.md) 协议发布。

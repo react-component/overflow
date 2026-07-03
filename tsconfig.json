@@ -1,16 +1,19 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "moduleResolution": "node",
-    "baseUrl": "./",
+    "strict": false,
+    "types": ["node", "jest"],
+    "moduleResolution": "bundler",
     "jsx": "react",
     "declaration": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "paths": {
-      "@/*": ["src/*"],
-      "@@/*": [".dumi/tmp/*"],
-      "rc-overflow": ["src/index.tsx"]
+      "@/*": ["./src/*"],
+      "@@/*": ["./.dumi/tmp/*"],
+      "rc-overflow": ["./src/index.tsx"]
     }
-  }
+  },
+  "include": ["**/*.ts", "**/*.tsx", ".dumirc.ts"],
+  "exclude": ["node_modules", "es", "lib", "dist", "docs-dist", ".doc", ".dumi/tmp", "coverage"]
 }

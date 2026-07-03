@@ -7,7 +7,7 @@ export type ComponentType =
   | React.ComponentType<any>
   | React.ForwardRefExoticComponent<any>
   | React.FC<any>
-  | keyof React.ReactHTML;
+  | keyof HTMLElementTagNameMap;
 
 export interface RawItemProps extends React.HTMLAttributes<any> {
   component?: ComponentType;

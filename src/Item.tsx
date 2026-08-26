@@ -82,9 +82,13 @@ function InternalItem<ItemType>(
     };
   }
 
-  const overflowProps: React.HTMLAttributes<any> = {};
+  const overflowProps: Omit<React.HTMLAttributes<any>, 'inert'> & {
+    inert?: boolean | '';
+  } = {};
   if (mergedHidden) {
     overflowProps['aria-hidden'] = true;
+    // React <= 18 only serializes unknown boolean attributes when passed as strings.
+    overflowProps.inert = Number.parseInt(React.version, 10) >= 19 ? true : '';
   }
 
   let itemNode = (

@@ -47,6 +47,8 @@ describe('Overflow.Responsive', () => {
     expect(
       wrapper.findItems().find('div').last().prop('aria-hidden'),
     ).toBeTruthy();
+    expect(wrapper.findItems().last().prop('inert')).toBe('');
+    expect(wrapper.findItems().at(0).prop('inert')).toBeNull();
   });
 
   it('only one', async () => {

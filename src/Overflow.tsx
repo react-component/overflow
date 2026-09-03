@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState, useMemo, useCallback } from 'react';
 import { clsx } from 'clsx';
 import ResizeObserver from '@rc-component/resize-observer';
-import { useLayoutEffect } from '@rc-component/util';
+import { isReactRenderable, useLayoutEffect } from '@rc-component/util';
 import Item from './Item';
 import useEffectState, { useBatcher } from './hooks/useEffectState';
 import type { ComponentType } from './RawItem';
@@ -401,7 +401,7 @@ function Overflow<ItemType = any>(
       {...restProps}
     >
       {/* Prefix Node */}
-      {prefix && (
+      {isReactRenderable(prefix) && (
         <Item
           {...itemSharedProps}
           responsive={isResponsive}
@@ -421,7 +421,7 @@ function Overflow<ItemType = any>(
       {showRest ? restNode : null}
 
       {/* Suffix Node */}
-      {suffix && (
+      {isReactRenderable(suffix) && (
         <Item
           {...itemSharedProps}
           responsive={isResponsive}

@@ -211,6 +211,24 @@ describe('Overflow.Responsive', () => {
       expect(wrapper.findSuffix().props().style.position).toBeFalsy();
     });
 
+    it('clears the pinned position for a numeric zero suffix', async () => {
+      const wrapper = mount(
+        <Overflow<ItemType>
+          data={getData(10)}
+          itemKey="key"
+          renderItem={renderItem}
+          maxCount="responsive"
+          suffix={0}
+        />,
+      );
+
+      await wrapper.initSize(100, 20);
+      expect(wrapper.findSuffix().props().style.position).toBe('absolute');
+
+      await wrapper.triggerItemResize(0, 90);
+      expect(wrapper.findSuffix().props().style.position).toBeFalsy();
+    });
+
     it('long to short should keep correct position', async () => {
       const wrapper = mount(
         <Overflow<ItemType>

@@ -298,7 +298,10 @@ function Overflow<ItemType = any>(
         }
       }
 
-      if (suffix && getItemWidth(0) + suffixWidth > mergedContainerWidth) {
+      if (
+        isReactRenderable(suffix) &&
+        getItemWidth(0) + suffixWidth > mergedContainerWidth
+      ) {
         setSuffixFixedStart(null);
       }
     }

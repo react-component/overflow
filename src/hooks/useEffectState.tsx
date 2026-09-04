@@ -47,12 +47,22 @@ export default function useEffectState<T extends string | number | object>(
   // Value
   const [stateValue, setStateValue] = React.useState(defaultValue);
 
+  const abortController = new AbortController();
+  
   // Set State
   const setEffectVal = useEvent((nextValue: Updater<T>) => {
     notifyEffectUpdate(() => {
-      setStateValue(nextValue);
-    });
+      if (!abortController.signal.aborted) {
+        setStateValue(nextValue);
+      }
+    }, abortController.signal);
   });
 
+  useEffect(() => {
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+  
   return [stateValue, setEffectVal];
 }

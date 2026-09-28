@@ -16,8 +16,10 @@ export { OverflowContext } from './context';
 
 export type { ComponentType } from './RawItem';
 
-export interface OverflowProps<ItemType>
-  extends Omit<React.HTMLAttributes<any>, 'prefix'> {
+export interface OverflowProps<ItemType> extends Omit<
+  React.HTMLAttributes<any>,
+  'prefix'
+> {
   prefixCls?: string;
   className?: string;
   style?: React.CSSProperties;
@@ -30,8 +32,7 @@ export interface OverflowProps<ItemType>
   renderRawItem?: (item: ItemType, index: number) => React.ReactElement;
   maxCount?: number | typeof RESPONSIVE | typeof INVALIDATE;
   renderRest?:
-    | React.ReactNode
-    | ((omittedItems: ItemType[]) => React.ReactNode);
+    React.ReactNode | ((omittedItems: ItemType[]) => React.ReactNode);
   /** @private Do not use in your production. Render raw node that need wrap Item by developer self */
   renderRawRest?: (omittedItems: ItemType[]) => React.ReactElement;
   prefix?: React.ReactNode;
@@ -380,7 +381,9 @@ function Overflow<ItemType = any>(
     display: displayRest,
   };
 
-  const mergedRenderRest = renderRest || defaultRenderRest;
+  const mergedRenderRest = isReactRenderable(renderRest)
+    ? renderRest
+    : defaultRenderRest;
 
   const restNode = renderRawRest ? (
     <OverflowContext.Provider
@@ -465,13 +468,13 @@ type FilledOverflowType = ForwardOverflowType & {
   INVALIDATE: typeof INVALIDATE;
 };
 
-((ForwardOverflow as unknown) as FilledOverflowType).Item = RawItem;
-((ForwardOverflow as unknown) as FilledOverflowType).RESPONSIVE = RESPONSIVE;
-((ForwardOverflow as unknown) as FilledOverflowType).INVALIDATE = INVALIDATE;
+(ForwardOverflow as unknown as FilledOverflowType).Item = RawItem;
+(ForwardOverflow as unknown as FilledOverflowType).RESPONSIVE = RESPONSIVE;
+(ForwardOverflow as unknown as FilledOverflowType).INVALIDATE = INVALIDATE;
 
 if (process.env.NODE_ENV !== 'production') {
   ForwardOverflow.displayName = 'Overflow';
 }
 
 // Convert to generic type
-export default (ForwardOverflow as unknown) as FilledOverflowType;
+export default ForwardOverflow as unknown as FilledOverflowType;

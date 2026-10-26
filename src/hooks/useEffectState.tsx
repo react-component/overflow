@@ -18,6 +18,7 @@ export function useBatcher() {
   const destroyedRef = React.useRef(false);
 
   React.useEffect(() => {
+    destroyedRef.current = false;
     return () => {
       destroyedRef.current = true;
       updateFuncRef.current = null;

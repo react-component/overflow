@@ -15,15 +15,28 @@ type NotifyEffectUpdate = (callback: UpdateCallbackFunc) => void;
 export function useBatcher() {
   // Updater Trigger
   const updateFuncRef = React.useRef<UpdateCallbackFunc[]>(null);
+  const destroyedRef = React.useRef(false);
+
+  React.useEffect(() => {
+    destroyedRef.current = false;
+    return () => {
+      destroyedRef.current = true;
+      updateFuncRef.current = null;
+    };
+  }, []);
 
   // Notify update
   const notifyEffectUpdate: NotifyEffectUpdate = callback => {
+    if (destroyedRef.current) {
+      return;
+    }
+
     if (!updateFuncRef.current) {
       updateFuncRef.current = [];
 
       channelUpdate(() => {
         unstable_batchedUpdates(() => {
-          updateFuncRef.current.forEach(fn => {
+          updateFuncRef.current?.forEach(fn => {
             fn();
           });
           updateFuncRef.current = null;
